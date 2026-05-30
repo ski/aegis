@@ -16,6 +16,7 @@ step later.
 pnpm install
 pnpm demo               # injection scenario: escalation + exfiltration blocked, with audit trail
 pnpm demo:compartments  # milestone 1: global separation-of-duties — unsafe wiring rejected, safe wiring runs
+pnpm demo:powerbox      # milestone 2: brokered grants — manufactured grants die, real grants flow over the trusted path
 pnpm typecheck          # tsc --noEmit
 ```
 
@@ -49,6 +50,8 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/topology.ts` | the flow graph + the **global** separation-of-duties checker (#1, #22) |
 | `src/supervisor.ts` | the trusted base: `wire()` admits/refuses a topology; a sound structural declassifier |
 | `src/demo-compartmentalized.ts` | milestone 1: unsafe wiring rejected (incl. laundering chain), safe wiring run |
+| `src/powerbox.ts` | the brokered-grant adjudicator: attenuated domain, provenance gate, trusted-path console |
+| `src/demo-powerbox.ts` | milestone 2: manufactured grants die at the gate; real grants flow over the trusted path |
 
 ## Honest scope (what this is NOT yet)
 
@@ -73,6 +76,9 @@ Tracked against the design's known gaps:
 - [x] **1 — compartmentalization + global separation of duties** (`pnpm demo:compartments`): unsafe
   wiring (incl. a multi-hop laundering chain) is rejected *at wiring time*; the safe topology with a
   declassifier is admitted and confines an injected sender to a declassified aggregate (#1, #22).
-- [ ] **2** — powerbox + trusted path (#7, #17): brokered grants, an injected grant-request dies.
+- [x] **2 — powerbox + trusted path** (`pnpm demo:powerbox`): brokered grants. An out-of-domain
+  request is refused; a tainted (manufactured) request is auto-denied without reaching the operator;
+  a clean request is decided over the canonical description via the trusted path; the agent cannot
+  self-grant (#7, #17, #20).
 - [ ] **3** — one real tool as a WASM component (#D1): "a tool is a capability" at the type level.
 - [ ] **4** — a real small CPU model behind the `Oracle`, with the inference call logged for replay.

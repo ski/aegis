@@ -57,9 +57,12 @@ async function main(): Promise<void> {
       } else if (r.blocked === 'no-authority') {
         console.log(`    ⛔ ${r.tool}: BLOCKED (no-authority) — no such capability is held`);
         observation = `error: '${r.tool}' is not available`;
-      } else {
+      } else if (r.blocked === 'flow') {
         console.log(`    ⛔ ${r.tool}: BLOCKED (flow)`);
         for (const reason of r.reasons) console.log(`        · ${reason}`);
+        observation = `error: '${r.tool}' was blocked`;
+      } else {
+        console.log(`    ⛔ ${r.tool}: BLOCKED (${r.blocked})`);
         observation = `error: '${r.tool}' was blocked`;
       }
     } else {

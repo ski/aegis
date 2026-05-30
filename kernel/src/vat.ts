@@ -13,8 +13,16 @@ import { harden } from './harden';
 import type { Capability } from './capability';
 import type { Label } from './label';
 import { bottom, flowCheck, fmtLabel, join } from './label';
+import type { Powerbox } from './powerbox';
 
-export type AuditEvent = 'absorb' | 'resolve-fail' | 'flow-block' | 'invoke-ok';
+export type AuditEvent =
+  | 'absorb'
+  | 'resolve-fail'
+  | 'flow-block'
+  | 'invoke-ok'
+  | 'grant-request'
+  | 'grant-ok'
+  | 'grant-denied';
 
 export interface AuditEntry {
   readonly turn: number;
@@ -26,7 +34,11 @@ export interface AuditEntry {
 export type ActResult =
   | { readonly ok: true; readonly tool: string; readonly value: unknown }
   | { readonly ok: false; readonly blocked: 'no-authority'; readonly tool: string }
-  | { readonly ok: false; readonly blocked: 'flow'; readonly tool: string; readonly reasons: readonly string[] };
+  | { readonly ok: false; readonly blocked: 'flow'; readonly tool: string; readonly reasons: readonly string[] }
+  | { readonly ok: false; readonly blocked: 'grant-denied'; readonly tool: string; readonly reason: string };
+
+/** The reserved verb a model emits to ask the powerbox for a capability it does not yet hold. */
+export const REQUEST_CAPABILITY = 'request_capability';
 
 export class Vat {
   readonly name: string;
@@ -39,9 +51,19 @@ export class Vat {
     this.name = name;
   }
 
+  private powerbox?: Powerbox;
+
   /** Endowment (docs/03): the parent decides a child's caps. Bind a held cap under a petname. */
   endow(petname: string, cap: Capability): void {
     this.held.set(petname, cap);
+  }
+
+  /**
+   * Attach a powerbox facet (itself a held capability). Without one, the vat is pure (a): it can
+   * only ever use what it was endowed and cannot even *ask* for more.
+   */
+  attachPowerbox(pb: Powerbox): void {
+    this.powerbox = pb;
   }
 
   beginTurn(): void {
@@ -89,6 +111,11 @@ export class Vat {
    * resolves to, never from the name itself.
    */
   async act(toolName: string, arg: unknown, opts?: { endorsed?: boolean }): Promise<ActResult> {
+    // Reserved verb: ask the powerbox to broker a capability we don't yet hold.
+    if (toolName === REQUEST_CAPABILITY) {
+      return this.handleGrantRequest(arg);
+    }
+
     // (a) axiom + resolver: naming is not authority.
     const cap = this.held.get(toolName);
     if (!cap) {
@@ -103,10 +130,41 @@ export class Vat {
       return harden({ ok: false, blocked: 'flow', tool: cap.kind, reasons: verdict.reasons });
     }
 
-    // Both gates passed — perform the effect, then absorb whatever label it returns.
-    const result = await cap.invoke(arg);
+    // Both gates passed — perform the effect (with the trusted invocation context), then absorb.
+    const result = await cap.invoke(arg, { requesterLabel: this.turnLabel, requester: this.name });
     this.absorb(result.label, `${cap.kind} returned ${fmtLabel(result.label)}`);
     this.record('invoke-ok', `${cap.kind} performed`);
     return harden({ ok: true, tool: cap.kind, value: result.value });
+  }
+
+  /**
+   * Brokered grant. The model supplies a petname + reason (data); the trusted vat supplies the true
+   * taint (the model cannot lie about it). On approval the vat endows itself with the fresh cap.
+   */
+  private async handleGrantRequest(arg: unknown): Promise<ActResult> {
+    const { petname, reason } = (arg ?? {}) as { petname?: string; reason?: string };
+    const name = petname ?? '(unnamed)';
+    this.record('grant-request', `requested '${name}': ${reason ?? '(no reason)'}`);
+
+    if (!this.powerbox) {
+      // Pure (a): no broker cap held — cannot even ask.
+      this.record('grant-denied', `'${name}' — no powerbox held; cannot request capabilities`);
+      return harden({ ok: false, blocked: 'grant-denied', tool: name, reason: 'no powerbox held' });
+    }
+
+    const decision = await this.powerbox.adjudicate({
+      petname: name,
+      reason: reason ?? '',
+      requesterLabel: this.turnLabel, // trusted: read from the vat, not the model
+      requester: this.name,
+    });
+
+    if (decision.outcome === 'granted') {
+      this.held.set(name, decision.cap);
+      this.record('grant-ok', `'${name}' granted and endowed`);
+      return harden({ ok: true, tool: REQUEST_CAPABILITY, value: `granted '${name}'` });
+    }
+    this.record('grant-denied', `'${name}' — ${decision.reason}`);
+    return harden({ ok: false, blocked: 'grant-denied', tool: name, reason: decision.reason });
   }
 }

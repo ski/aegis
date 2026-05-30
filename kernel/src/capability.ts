@@ -17,11 +17,21 @@ export interface InvokeResult {
   readonly label: Label;
 }
 
+/**
+ * Context the *trusted vat* supplies on every invocation. The agent cannot forge it — e.g. the
+ * requester's current taint is read from the vat's turn label, never from anything the model said.
+ * Used by the powerbox to provenance-gate grant requests.
+ */
+export interface InvokeContext {
+  readonly requesterLabel: Label;
+  readonly requester: string;
+}
+
 export interface Capability {
   readonly id: string;
   readonly kind: string;
   readonly clearance: Clearance;
-  invoke(arg: unknown): InvokeResult | Promise<InvokeResult>;
+  invoke(arg: unknown, ctx?: InvokeContext): InvokeResult | Promise<InvokeResult>;
 }
 
 let counter = 0;
@@ -30,7 +40,7 @@ const nextId = (kind: string): string => `cap:${kind}:${++counter}`;
 export function makeCapability(opts: {
   kind: string;
   clearance?: Clearance;
-  invoke: (arg: unknown) => InvokeResult | Promise<InvokeResult>;
+  invoke: (arg: unknown, ctx?: InvokeContext) => InvokeResult | Promise<InvokeResult>;
 }): Capability {
   return harden({
     id: nextId(opts.kind),
