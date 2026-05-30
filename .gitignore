@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+target/
+dist/
+build/
+
+# Local env / secrets
+.env
+.env.*
+*.local
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
