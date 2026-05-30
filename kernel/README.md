@@ -18,7 +18,10 @@ pnpm demo               # injection scenario: escalation + exfiltration blocked,
 pnpm demo:compartments  # milestone 1: global separation-of-duties — unsafe wiring rejected, safe wiring runs
 pnpm demo:powerbox      # milestone 2: brokered grants — manufactured grants die, real grants flow over the trusted path
 pnpm demo:wasm          # milestone 3: a real WASM tool is a capability with zero ambient authority
+pnpm demo:model         # milestone 4: model-as-oracle — constrained decoding + deterministic replay
 pnpm typecheck          # tsc --noEmit
+# point demo:model at a real local model:
+#   AEGIS_MODEL_URL=http://localhost:11434/v1/chat/completions pnpm demo:model
 ```
 
 Each demo exits nonzero if any guarantee fails.
@@ -55,6 +58,8 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-powerbox.ts` | milestone 2: manufactured grants die at the gate; real grants flow over the trusted path |
 | `src/wasm-tool.ts` | compile WAT→wasm; wrap a WASM export as a capability; `importsOf` (the authority surface) |
 | `src/demo-wasm.ts` | milestone 3: a WASM tool has only the authority it was handed |
+| `src/model-oracle.ts` | model-as-oracle: constrained decoding (validate+retry), inference log, replay, OpenAI-compatible adapter |
+| `src/demo-model.ts` | milestone 4: messy model text → tool-calls; guarantees invariant under model swap; deterministic replay |
 
 ## Honest scope (what this is NOT yet)
 
@@ -63,8 +68,10 @@ Tracked against the design's known gaps:
 - **No WASM/WASI isolation yet** — caps are in-process objects; the trust boundary is that the
   untrusted oracle only emits *data*, never touches kernel objects. Phase 1b moves untrusted effects
   into WASM components (issue #D1 / substrate phase 1).
-- **No real model yet** — the oracle is scripted for determinism. A small CPU model swaps in behind
-  the same `Oracle` interface (ADR 0001 inference contract).
+- **The default model is a deterministic mock** — milestone 4 builds the real model-as-oracle harness
+  (constrained decoding, inference logging, replay) and a real OpenAI-compatible adapter, but the
+  *default* demo uses a scripted mock so the property stays testable offline. Set `AEGIS_MODEL_URL` to
+  drive it with a real local CPU model.
 - **No powerbox / trusted path yet** (issues #7, #17) — endowment is static. The brokered grant flow
   with an unspoofable UI is the next build milestone.
 - **The declassifier is structural and demo-specific** (a count-only reducer). It is sound *because*
@@ -87,4 +94,8 @@ Tracked against the design's known gaps:
   (compiled from WAT) wrapped as caps and driven through the membrane. A pure tool has zero imports
   (no ambient authority); an effectful tool's entire authority surface is its one host import, and it
   cannot even instantiate without being handed that capability (#D1).
-- [ ] **4** — a real small CPU model behind the `Oracle`, with the inference call logged for replay.
+- [x] **4 — model-as-oracle: constrained decoding + replay** (`pnpm demo:model`): the injected
+  scenario driven by a *model* emitting messy free text. The harness constrains it into valid
+  tool-calls (retrying on garbage) and logs every inference. The membrane's guarantees are unchanged
+  (safety doesn't depend on the model) and the logged run replays deterministically. A real
+  OpenAI-compatible adapter is wired — point a local CPU model at it with `AEGIS_MODEL_URL`.

@@ -9,6 +9,7 @@
     "demo:compartments": "tsx src/demo-compartmentalized.ts",
     "demo:powerbox": "tsx src/demo-powerbox.ts",
     "demo:wasm": "tsx src/demo-wasm.ts",
+    "demo:model": "tsx src/demo-model.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
