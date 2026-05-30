@@ -9,6 +9,21 @@ them with object-capabilities and information-flow control. The core bet:
 > **The model is never a principal. It is a subject confined by the capabilities it holds.
 > The model proposes; the capability graph disposes.**
 
+## The unifying principle: least authority + least knowledge
+
+An untrusted agent is dangerous along exactly two axes — what it can **do** and what it can **know** —
+so Aegis minimizes both:
+
+> **Aegis minimizes what an agent can do *and* what it knows.** Object-capabilities bound its authority;
+> information-flow and ephemerality bound its knowledge. The model is never a principal — only a subject,
+> minimal in power and minimal in memory.
+
+This is the spine the four design docs hang from. Least authority is the mature half (the ocap
+tradition); least knowledge is the half AI forces, because an LLM is a *mixing function with a memory* —
+the first actor that is at once untrusted-to-behave and exposed-to-everything-it-reads. See
+**[docs/05 — The two minimizations](docs/05-least-authority-least-knowledge.md)** for the full frame,
+including the thermodynamics of secrets and why *information should be designed to decay*.
+
 ## Why these two things belong together
 
 AI and object-capabilities (ocaps) are not two features bolted onto an OS. They are
@@ -66,6 +81,7 @@ No code yet. See [docs/00-overview.md](docs/00-overview.md) for the full integra
 | `docs/02-capabilities-and-resolution.md` | The single axiom, broker caps, powerbox, petnames, facets |
 | `docs/03-agents-as-vats.md` | Vat model, spawn-as-delegation, membranes, revocation, OCapN |
 | `docs/04-information-flow.md` | The ocap/IFC dual, label-the-turn, declassify/endorse, compartments |
+| `docs/05-least-authority-least-knowledge.md` | The unifying principle — the two minimizations, thermodynamics of secrets, designing information to decay |
 | `docs/glossary.md` | Quick reference for the vocabulary |
 | `docs/decisions/` | Dated decision records (ADR-style) |
 
