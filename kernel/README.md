@@ -14,11 +14,12 @@ step later.
 
 ```bash
 pnpm install
-pnpm demo        # runs the injection scenario, prints the audit trail, asserts the guarantees
-pnpm typecheck   # tsc --noEmit
+pnpm demo               # injection scenario: escalation + exfiltration blocked, with audit trail
+pnpm demo:compartments  # milestone 1: global separation-of-duties — unsafe wiring rejected, safe wiring runs
+pnpm typecheck          # tsc --noEmit
 ```
 
-`pnpm demo` exits nonzero if any guarantee fails.
+Each demo exits nonzero if any guarantee fails.
 
 ## What it proves
 
@@ -44,7 +45,10 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/vat.ts` | the agent-as-vat: the single membrane where authority + flow are both checked, with the audit log |
 | `src/oracle.ts` | the model as an external oracle; a scripted "injected" stand-in |
 | `src/tools.ts` | three real caps + the injected model's plan |
-| `src/demo.ts` | the scenario, the printed audit trail, and the asserted guarantees |
+| `src/demo.ts` | the escalation/exfiltration scenario, audit trail, and asserted guarantees |
+| `src/topology.ts` | the flow graph + the **global** separation-of-duties checker (#1, #22) |
+| `src/supervisor.ts` | the trusted base: `wire()` admits/refuses a topology; a sound structural declassifier |
+| `src/demo-compartmentalized.ts` | milestone 1: unsafe wiring rejected (incl. laundering chain), safe wiring run |
 
 ## Honest scope (what this is NOT yet)
 
@@ -55,16 +59,20 @@ Tracked against the design's known gaps:
   into WASM components (issue #D1 / substrate phase 1).
 - **No real model yet** — the oracle is scripted for determinism. A small CPU model swaps in behind
   the same `Oracle` interface (ADR 0001 inference contract).
-- **Single over-endowed vat** — to prove the flow gate blocks exfil even when the agent holds both a
-  secret source and an outbound sink. The **compartmentalized** reader/sender split (issues #1, #22)
-  is the next demo.
 - **No powerbox / trusted path yet** (issues #7, #17) — endowment is static. The brokered grant flow
   with an unspoofable UI is the next build milestone.
+- **The declassifier is structural and demo-specific** (a count-only reducer). It is sound *because*
+  it constructs its output from cardinality alone — it is not a general free-text declassifier, which
+  remains out of scope (issue #2).
 - **`harden` is shallow** (`Object.freeze`) — SES transitive `harden()` after `lockdown()` is the
   hardening swap.
 
-## Next
+## Milestones
 
-See `../docs/decisions/README.md` → "Threads still open". Immediate roadmap: compartmentalized
-two-vat demo (#1/#22) → powerbox + trusted path (#7/#17) → WASM component for one real tool (#D1) →
-real CPU model behind the oracle.
+- [x] **1a** — injection cannot escalate or exfiltrate (`pnpm demo`).
+- [x] **1 — compartmentalization + global separation of duties** (`pnpm demo:compartments`): unsafe
+  wiring (incl. a multi-hop laundering chain) is rejected *at wiring time*; the safe topology with a
+  declassifier is admitted and confines an injected sender to a declassified aggregate (#1, #22).
+- [ ] **2** — powerbox + trusted path (#7, #17): brokered grants, an injected grant-request dies.
+- [ ] **3** — one real tool as a WASM component (#D1): "a tool is a capability" at the type level.
+- [ ] **4** — a real small CPU model behind the `Oracle`, with the inference call logged for replay.

@@ -66,6 +66,23 @@ export class Vat {
     this.record('absorb', why);
   }
 
+  private _inbox: unknown = undefined;
+
+  /**
+   * Receive an inter-vat message. The value is held in the inbox and its label is absorbed into the
+   * turn — so a downstream vat inherits the secrecy/taint of whatever it was handed. This is the
+   * edge over which the global flow graph (issue #22) actually carries data at runtime.
+   */
+  receive(value: unknown, l: Label): void {
+    this._inbox = value;
+    this.absorb(l, `received inter-vat message ${fmtLabel(l)}`);
+  }
+
+  /** The last value handed to this vat — all an injected vat has to work with. */
+  lastReceived(): unknown {
+    return this._inbox;
+  }
+
   /**
    * The membrane. Every model-proposed action passes through here.
    * `toolName` is a forgeable string the model emitted; authority comes from the held cap it

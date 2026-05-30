@@ -6,6 +6,7 @@
   "description": "Aegis phase-1a control-plane kernel — ocap + integrity-first IFC, demonstrated against a prompt-injected agent.",
   "scripts": {
     "demo": "tsx src/demo.ts",
+    "demo:compartments": "tsx src/demo-compartmentalized.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
