@@ -82,6 +82,7 @@ No code yet. See [docs/00-overview.md](docs/00-overview.md) for the full integra
 | `docs/03-agents-as-vats.md` | Vat model, spawn-as-delegation, membranes, revocation, OCapN |
 | `docs/04-information-flow.md` | The ocap/IFC dual, label-the-turn, declassify/endorse, compartments |
 | `docs/05-least-authority-least-knowledge.md` | The unifying principle — the two minimizations, thermodynamics of secrets, designing information to decay |
+| `docs/06-irreducible-limits.md` | What the design honestly *cannot* solve — the fundamental limits it scopes around rather than fixes |
 | `docs/glossary.md` | Quick reference for the vocabulary |
 | `docs/decisions/` | Dated decision records (ADR-style) |
 
