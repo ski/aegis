@@ -22,6 +22,7 @@ pnpm demo:model         # milestone 4: model-as-oracle — constrained decoding 
 pnpm demo:hardened      # hardening: SES lockdown + tamper-proof caps + transitive revocable membrane
 pnpm demo:distribution  # CapTP: cross-vat capabilities, promise pipelining, revocation across the wire
 pnpm demo:microkernel   # #19: all raw authority behind a 4-method core; caps can't be invoked off-path
+pnpm demo:model:http    # real model end-to-end over HTTP (OpenAI-compatible adapter, real round-trips)
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
@@ -132,3 +133,7 @@ Tracked against the design's known gaps:
   A cap handle exposes only metadata and **cannot be invoked off-path** — the only door to authority is
   the kernel, where the dual gate and cascading revocation live. This shrinks the JS-level trusted
   surface; *separately-verifiable* (the seL4 floor) remains the phase-3 completion of #19.
+- [x] **Real model end-to-end over HTTP** (`pnpm demo:model:http`): a local OpenAI-compatible server
+  drives the agent through the real `fetch` adapter — constrained decoding and the membrane on the live
+  transport. Only the weights are mocked; point `AEGIS_MODEL_URL` at Ollama/llama.cpp for a real model
+  (`ollama run llama3.2:1b` then `AEGIS_MODEL_URL=…:11434/v1/chat/completions pnpm demo:model`).

@@ -13,6 +13,7 @@
     "demo:hardened": "tsx src/demo-hardened.ts",
     "demo:distribution": "tsx src/demo-distribution.ts",
     "demo:microkernel": "tsx src/demo-microkernel.ts",
+    "demo:model:http": "tsx src/demo-model-http.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

@@ -12,6 +12,7 @@ const demos = [
   'demo:hardened',
   'demo:distribution',
   'demo:microkernel',
+  'demo:model:http',
 ];
 
 describe('demos exit 0 (integration, under lockdown)', () => {
