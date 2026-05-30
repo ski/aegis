@@ -68,9 +68,13 @@ The slogan that ties it together:
 
 ## Status
 
-Design phase. This repo currently holds the architecture as reasoned out from first principles.
-No code yet. See [docs/00-overview.md](docs/00-overview.md) for the full integration argument and
-[docs/decisions/](docs/decisions/) for the locked decisions.
+**Phase 1a — first runnable slice.** The design has been reasoned from first principles and
+stress-tested through three adversarial passes (31 findings, tracked as issues). The first kernel
+slice is now executable: **[`kernel/`](kernel/)** runs a prompt-injected agent that *structurally
+fails to escalate authority or exfiltrate a secret*, with an audit trail proving why
+(`cd kernel && pnpm install && pnpm demo`). See [docs/00-overview.md](docs/00-overview.md) for the
+full argument, [docs/06-irreducible-limits.md](docs/06-irreducible-limits.md) for what it honestly
+cannot do, and [docs/decisions/](docs/decisions/) for the locked decisions.
 
 ## Repo map
 
