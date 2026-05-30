@@ -46,6 +46,19 @@ propagation through a giant mixing function. So the only honest model is coarse:
 An agent that has *seen* a secret is "high" for the rest of that context's life, and everything it
 emits is gated against that high label. Brutal, but true to how the model works.
 
+### Is label-the-turn the right granularity? (resolving the open question)
+
+Too coarse and one secret poisons the whole turn (the endorsement tax, issue #29… see #C1); too fine is
+*unsound* — you cannot track taint per-token through a mixing function. So the resolution is:
+
+> **Label-the-turn is the right *detection* granularity — the only sound one. You get finer not by making
+> labels finer, but by making *compartments* finer.** If a turn is too coarse a unit, split the work into
+> more vats and let the context assembler keep their inputs separate. Granularity is a *compartmentalization*
+> knob (more, smaller vats), not a *labeling* knob.
+
+This is why the vat decomposition and the context assembler ([§asymmetry](#the-asymmetry-the-dual-hides-revoke-authority-decay-information))
+carry the weight: they are how you buy precision without unsound per-token tracking.
+
 ## It plugs into the membrane with zero new architecture
 
 The membrane already gates **every** outbound send on a single-threaded turn (see
@@ -58,6 +71,15 @@ A send passes only if **both** hold. Authority says "you may use the send-email 
 "...but not with *this* payload — it's tainted high." Every cap carries a **clearance** alongside its
 authority; every datum read through a cap arrives **labeled by its source** (a web-fetch cap stamps its
 results `untrusted-web`). The ocap check and the IFC check are the *same chokepoint doing dual duty.*
+
+> **But who assigns the labels and clearances? (issue #21)** IFC is only as good as label *assignment*,
+> and assignment is an unsolved, error-prone, trusted surface — mislabel once and the wall has a hole.
+> The personal-OS scope ([ADR 0002](decisions/0002-personal-os-not-platform.md)) makes it tractable:
+> the operator stamps labels at **admission time** — on *sources* (this tool, this data store, this
+> feed), not on individual data items — and ingested content inherits provenance labels automatically
+> (web → `untrusted-web`). The discipline is **default-deny**: unlabeled data is treated as maximally
+> restricted until labeled. This keeps human labeling rare, but it remains a real, named gap, not a
+> solved problem.
 
 ## The two trusted escape hatches: declassify and endorse
 

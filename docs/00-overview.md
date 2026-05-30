@@ -88,8 +88,14 @@ everything composes; get it wrong and you've rebuilt ambient authority with extr
   behavior expressible through the authority it holds.
 - **Not assumed trustworthy:** the model's outputs, the model's self-reports about safety, any
   string the model produces as a designator.
-- **Trusted base:** the ocap control plane (membranes, resolver, spawn primitive,
-  declassify/endorse gates), and — at the verified phase — the seL4 microkernel beneath it.
+- **Trusted base:** the ocap control plane (membranes, resolver, spawn primitive, context-assembler,
+  declassify/endorse gates), a **trusted monotonic clock** (leases and ephemerality depend on it —
+  issue #30), and — at the verified phase — the seL4 microkernel beneath it. Two cautions: these trusted
+  components are themselves **confused-deputy targets** that take untrusted input (petname proposals,
+  grant requests, content to assemble/redact) and must be hardened accordingly (issue #25); and the
+  **integrity of the trusted base's *build*** is itself a total-compromise surface — runtime confinement
+  does nothing about a compromised confiner, so reproducible builds + attestation are required (issues
+  #29, #31).
 - **Explicitly out of the trusted base:** the model/inference engine, every tool that touches the
   outside world, all native blobs.
 - **Goals:** (1) no authority escalation under injection — guaranteed structurally by ocaps;
@@ -99,9 +105,13 @@ everything composes; get it wrong and you've rebuilt ambient authority with extr
   (3) **structural + auditable** confinement — an auditable account of what authority each agent was
   endowed with and why. *Not* "proven the agent couldn't escalate": seL4's proofs cover kernel
   isolation, not our (unverified) enforcement logic (issue #4).
-- **Residual / not fully solved:** covert channels (timing, tool-choice encoding), the semantic
-  correctness of declassifiers, and the model simply being *unhelpful* (ocaps bound blast radius,
-  not competence).
+- **Residual / not fully solved:** covert channels (timing, tool-choice encoding) and **microarchitectural
+  side channels** on shared hardware — shared caches, shared inference KV-cache/batching (issue #28); the
+  semantic correctness of declassifiers (#2) and the burden of **label assignment** itself (#21); the
+  granularity of **leaf-driver enforcement** (a cap is only as fine-grained as the driver behind it — #27);
+  **resource exhaustion / DoS** unless quantitative attenuation is enforced (#26); the **aggregate
+  human-attention budget** across all the gates that route to the human (#24); and the model simply being
+  *unhelpful* — ocaps bound blast radius, not competence, and least-knowledge can *starve* it (#23).
 - **Central architectural risk (issue #19):** every security property routes through the control
   plane (membranes, resolver, IFC checks, spawn invariant, declassify/endorse), so it is the universal
   chokepoint *and* the universal target — one bug there and all attenuation collapses at once. Today

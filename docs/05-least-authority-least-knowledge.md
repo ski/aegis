@@ -89,6 +89,20 @@ This is not a wall to defend. It is a gradient to manage — and it carries its 
    and to never co-mingle them with untrusted content** ([04 §ingestion](04-information-flow.md)). Data
    minimization, arrived at from first principles rather than from a privacy regulation.
 
+## The cost of the second minimization: knowledge vs. competence (issue #23)
+
+Least knowledge is not pure upside, and the doc would be dishonest to imply it. It has the exact dual of the
+POLA-vs-usability tension on the authority axis:
+
+> Every bit of context or authority you withhold makes the model **dumber** — its usefulness depends on the
+> context it can see. Push least-knowledge too far and you *starve* the model: the agent becomes secure and
+> useless.
+
+So "least knowledge" means **the least context that still makes the model competent at the task — not the
+least context, period.** Treat knowledge as a budgeted resource exactly like authority: spend the minimum
+that clears the competence floor, and find that floor empirically per task class. The goal is a model minimal
+in power and memory but *not lobotomized* — a real tension to manage, not a slogan.
+
 ## How the two minimizations meet the machinery
 
 - **Least authority** → caps, membranes, attenuation, the spawn invariant, revocation. *Enforced at the

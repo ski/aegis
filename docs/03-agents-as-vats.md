@@ -50,6 +50,15 @@ the entire spawn tree.
 > may simultaneously hold a `secret`-labeled read cap and an uncleared outbound cap."* The model
 > proposes the split; the trusted base refuses any split that violates the invariant.
 
+> **And the invariant must be *global*, not per-vat (issue #22).** Enforcing separation per-vat is not
+> enough: a *chain* of individually-compliant vats launders the flow — vat A holds the read cap and emits
+> a summary to vat B, which holds the outbound cap. Each vat passes the per-vat rule; the *composition* is
+> an exfiltration pipeline. So the invariant is evaluated over the **transitive message/flow graph**: no
+> *path* may connect a `secret`-labeled source to an uncleared sink without crossing a
+> declassifier/endorser. This is the labeled-flow tracking of
+> [04](04-information-flow.md) applied to inter-vat messages, enforced by the trusted base at the moment
+> one vat is introduced to another.
+
 ## Membranes and transitive attenuation
 
 "Hand over less than you hold" is the **membrane**, and the part that makes it *correct* rather than
@@ -64,6 +73,14 @@ Membranes you'll use constantly:
 - **Read-only** — mutating methods vanish; every returned object comes back read-only too.
 - **Revocable (caretaker)** — you hand out a forwarder and keep the off-switch.
 - **Lease / rate / budget** — expiry, rate limits, the spend cap.
+
+> **Quantitative attenuation is a first-class requirement, not just an example (issue #26).** Functional
+> attenuation bounds *which* operations a cap permits; it does **not** bound *how much*. A legitimate
+> write / send / infer cap can still fill the disk, spam the network, or burn the entire inference budget —
+> denial-of-service through authority the agent is *supposed* to have. So every cap can additionally carry
+> a rate limit / quota / budget (the lease-budget membrane, promoted from convenience to requirement), and
+> **resource exhaustion is an explicit threat-model category**, not an afterthought. The membrane itself —
+> a serialization point — and the shared inference engine are DoS targets in their own right.
 
 ## Revocation = dropping a membrane, and it cascades for free
 

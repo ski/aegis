@@ -81,6 +81,14 @@ access to their email"). Non-negotiables:
   (the classic secure-attention / unspoofable-UI guarantee). Without a trusted path, powerbox fatigue is
   the *optimistic* failure mode — the pessimistic one is the human approving a grant they never actually saw.
 
+> **The human has a finite attention budget, and the whole design draws on it (issue #24).** The powerbox
+> isn't the only thing routing decisions to the human — so do declassify/endorse ([04](04-information-flow.md))
+> and label assignment (issue #21). Each is reasonable alone; in *aggregate* they can demand hundreds of
+> decisions a day, and the human is a single, low-bandwidth, fatigue-prone resource. Treat total
+> human-interrupts as a **first-class bounded budget**: batch and prioritize, prefer durable/standing grants
+> and policy-rooted auto-decisions, and surface only the decisions that actually change an outcome. If the
+> aggregate budget is blown, that's a design defect, not a UX detail.
+
 ## The universal-object frame
 
 Above the control plane, **everything is an object reachable only by capability, spoken to only by

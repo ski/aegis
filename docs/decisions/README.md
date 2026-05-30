@@ -37,7 +37,26 @@ going after pillars the architecture didn't model. Doc-actionable ones were fold
 - **#19** (J1) — the control plane is a single point of total failure; needs a minimized verifiable membrane core. → [00 §threat model](../00-overview.md)
 - **#20** (L1) — petname confusion is a confused deputy at the naming layer. → [02 §petnames](../02-capabilities-and-resolution.md)
 
-**#14** (E1) is a *strategy* decision, not a code fix — see open threads below.
+**#14** (E1) was a strategy decision — resolved by [ADR 0002](0002-personal-os-not-platform.md).
+
+**Third adversarial pass** swept by security *category* (DoS, supply chain, side channels, human-factors in
+aggregate, the parts of the trusted base previously treated as free) and produced 11 more findings,
+[issues #21–#31](https://github.com/ski/aegis/issues), all folded in:
+
+- **#21** (M1) — who assigns labels/clearances; default-deny, operator-stamps-sources at admission. → [04](../04-information-flow.md)
+- **#22** (M2, `blocks-phase-1`) — separation of duties must be *global across the flow graph*, not per-vat. → [03 §spawn](../03-agents-as-vats.md)
+- **#23** (M3) — least-knowledge vs competence: the cost of the second minimization. → [05](../05-least-authority-least-knowledge.md)
+- **#24** (M4) — the aggregate human-attention budget is overspent across all gates. → [02 §powerbox](../02-capabilities-and-resolution.md)
+- **#25** (M5) — the trusted components are themselves confused-deputy targets. → [00 §threat model](../00-overview.md)
+- **#26** (M6) — quantitative attenuation (rate/quota/budget) is first-class; DoS is a threat category. → [03 §membranes](../03-agents-as-vats.md)
+- **#27** (M7) — leaf-resource caps are only as fine-grained as the driver behind them. → [00 §threat model](../00-overview.md)
+- **#28** (M8) — microarchitectural side channels on shared hardware (shared KV-cache/caches). → [00 §threat model](../00-overview.md)
+- **#29** (M9) — supply-chain integrity of the trusted base (and trojaned models). → [00 §threat model](../00-overview.md)
+- **#30** (M10) — leases/ephemerality depend on a trusted clock (now in the TCB). → [00 §threat model](../00-overview.md)
+- **#31** (M11) — control-plane upgrade & mutable policy is a total-compromise surface. → [00 §threat model](../00-overview.md)
+
+Also resolved an open question in the docs: **label-the-turn is the right *detection* granularity; finer
+precision comes from finer *compartments*, not finer labels** ([04](../04-information-flow.md)).
 
 ## Threads still open (not yet ADR'd)
 
