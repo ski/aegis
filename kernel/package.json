@@ -8,11 +8,13 @@
     "demo": "tsx src/demo.ts",
     "demo:compartments": "tsx src/demo-compartmentalized.ts",
     "demo:powerbox": "tsx src/demo-powerbox.ts",
+    "demo:wasm": "tsx src/demo-wasm.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "wabt": "^1.0.39"
   }
 }
