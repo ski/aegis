@@ -68,13 +68,21 @@ The slogan that ties it together:
 
 ## Status
 
-**Phase 1a — first runnable slice.** The design has been reasoned from first principles and
-stress-tested through three adversarial passes (31 findings, tracked as issues). The first kernel
-slice is now executable: **[`kernel/`](kernel/)** runs a prompt-injected agent that *structurally
-fails to escalate authority or exfiltrate a secret*, with an audit trail proving why
-(`cd kernel && pnpm install && pnpm demo`). See [docs/00-overview.md](docs/00-overview.md) for the
-full argument, [docs/06-irreducible-limits.md](docs/06-irreducible-limits.md) for what it honestly
-cannot do, and [docs/decisions/](docs/decisions/) for the locked decisions.
+**Phase 1 complete — the design is running code.** Reasoned from first principles, stress-tested
+through three adversarial passes (31 findings tracked as issues), and now demonstrated by five
+runnable demos in **[`kernel/`](kernel/)** (`cd kernel && pnpm install`):
+
+| Demo | Proves |
+| --- | --- |
+| `pnpm demo` | a prompt-injected agent cannot escalate or exfiltrate; full audit trail (#1, #2, #4) |
+| `pnpm demo:compartments` | global separation of duties — unsafe wiring (incl. laundering chains) rejected *before it runs* (#1, #22) |
+| `pnpm demo:powerbox` | brokered grants — manufactured grants die at the gate; real grants flow over a trusted path (#7, #17, #20) |
+| `pnpm demo:wasm` | a real WASM tool is a capability with zero ambient authority (#D1) |
+| `pnpm demo:model` | model-as-oracle — constrained decoding + deterministic replay; guarantees invariant under model swap |
+
+See [docs/00-overview.md](docs/00-overview.md) for the full argument,
+[docs/06-irreducible-limits.md](docs/06-irreducible-limits.md) for what it honestly cannot do, and
+[docs/decisions/](docs/decisions/) for the locked decisions.
 
 ## Repo map
 
