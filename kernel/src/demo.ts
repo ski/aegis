@@ -16,6 +16,7 @@
  *
  * Exit code is nonzero if any expected guarantee fails to hold.
  */
+import './bootstrap'; // lockdown() first — real SES harden for the whole run
 import { ScriptedOracle } from './oracle';
 import type { ActResult } from './vat';
 import { Vat } from './vat';

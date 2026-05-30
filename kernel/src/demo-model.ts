@@ -9,6 +9,7 @@
  * (retrying on garbage) and logs every inference. The point: the membrane's guarantees are unchanged —
  * safety does not depend on the model — and the logged run replays deterministically.
  */
+import './bootstrap'; // lockdown() first — real SES harden for the whole run
 import type { CompletionFn } from './model-oracle';
 import { ModelOracle, ReplayOracle, httpModel } from './model-oracle';
 import type { Oracle, Turn } from './oracle';

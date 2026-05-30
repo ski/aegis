@@ -11,6 +11,7 @@
  * sender vat is injected and hostile, yet it can neither read the database (it holds no such cap) nor
  * leak the records (they never reach it) — all it ever has is the declassified count.
  */
+import './bootstrap'; // lockdown() first — real SES harden for the whole run
 import { makeCapability } from './capability';
 import { bottom, label, sink, source } from './label';
 import { SeparationOfDutiesError, countOnlyDeclassifier, wire } from './supervisor';

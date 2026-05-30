@@ -10,6 +10,7 @@
     "demo:powerbox": "tsx src/demo-powerbox.ts",
     "demo:wasm": "tsx src/demo-wasm.ts",
     "demo:model": "tsx src/demo-model.ts",
+    "demo:hardened": "tsx src/demo-hardened.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -17,5 +18,11 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "wabt": "^1.0.39"
+  },
+  "dependencies": {
+    "@endo/eventual-send": "^1.5.0",
+    "@endo/far": "^1.1.14",
+    "@endo/init": "^1.1.13",
+    "ses": "^2.1.0"
   }
 }

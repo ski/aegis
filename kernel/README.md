@@ -19,6 +19,7 @@ pnpm demo:compartments  # milestone 1: global separation-of-duties — unsafe wi
 pnpm demo:powerbox      # milestone 2: brokered grants — manufactured grants die, real grants flow over the trusted path
 pnpm demo:wasm          # milestone 3: a real WASM tool is a capability with zero ambient authority
 pnpm demo:model         # milestone 4: model-as-oracle — constrained decoding + deterministic replay
+pnpm demo:hardened      # hardening: SES lockdown + tamper-proof caps + transitive revocable membrane
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
 #   AEGIS_MODEL_URL=http://localhost:11434/v1/chat/completions pnpm demo:model
@@ -44,7 +45,9 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 
 | File | Role |
 | --- | --- |
-| `src/harden.ts` | `harden` (Object.freeze now; SES `harden` later) |
+| `src/bootstrap.ts` | Endo bootstrap — `@endo/init` (lockdown + HandledPromise); import first |
+| `src/harden.ts` | `harden` — SES transitive `harden()` under lockdown, else `Object.freeze` |
+| `src/membrane.ts` | the transitive revocable membrane (shadow-target) + `makeCaretaker` |
 | `src/label.ts` | IFC labels, the lattice join, clearance, the flow check — the "least knowledge" half |
 | `src/capability.ts` | the unforgeable capability primitive |
 | `src/vat.ts` | the agent-as-vat: the single membrane where authority + flow are both checked, with the audit log |
@@ -60,6 +63,7 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-wasm.ts` | milestone 3: a WASM tool has only the authority it was handed |
 | `src/model-oracle.ts` | model-as-oracle: constrained decoding (validate+retry), inference log, replay, OpenAI-compatible adapter |
 | `src/demo-model.ts` | milestone 4: messy model text → tool-calls; guarantees invariant under model swap; deterministic replay |
+| `src/demo-hardened.ts` | hardening: lockdown active, tamper-proof caps, Far, transitive membrane, cascading-revoke kill-switch |
 
 ## Honest scope (what this is NOT yet)
 
@@ -77,8 +81,10 @@ Tracked against the design's known gaps:
 - **The declassifier is structural and demo-specific** (a count-only reducer). It is sound *because*
   it constructs its output from cardinality alone — it is not a general free-text declassifier, which
   remains out of scope (issue #2).
-- **`harden` is shallow** (`Object.freeze`) — SES transitive `harden()` after `lockdown()` is the
-  hardening swap.
+- ~~`harden` is shallow~~ — **done:** the kernel runs under SES `lockdown()`, so `harden()` is the
+  real transitive freeze and the membrane is enforced against a hardened realm (`pnpm demo:hardened`).
+  Still open: this hardens the *realm*, not the *TCB* — the minimized verifiable membrane core (#19)
+  is separate, harder work.
 
 ## Milestones
 
@@ -99,3 +105,9 @@ Tracked against the design's known gaps:
   tool-calls (retrying on garbage) and logs every inference. The membrane's guarantees are unchanged
   (safety doesn't depend on the model) and the logged run replays deterministically. A real
   OpenAI-compatible adapter is wired — point a local CPU model at it with `AEGIS_MODEL_URL`.
+- [x] **Hardening — Endo / SES** (`pnpm demo:hardened`): the kernel now runs under `lockdown()`
+  (all six demos). The SES-compatible patterns became actual SES — caps are tamper-proof under
+  transitive `harden()`, `Far` remotables are ready for CapTP — and the structural headline is a
+  **transitive revocable membrane**: a sub-cap reached through a membrane dies when it is revoked
+  (cascading revocation), wired into the vat as a kill-switch. (Note: this hardens the *realm*; it
+  does not shrink the TCB — #19 still stands.)

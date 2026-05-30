@@ -11,6 +11,7 @@
  *   - a tool with one import has exactly one capability — and cannot even instantiate without it;
  *   - "a tool is a capability" holds at the boundary: the sandboxed export plugs into the vat.
  */
+import './bootstrap'; // lockdown() first — real SES harden for the whole run
 import { makeCapability } from './capability';
 import { bottom, sink } from './label';
 import { Vat } from './vat';

@@ -11,6 +11,7 @@
  *   - trusted path:               a clean request is decided by the operator over the CANONICAL
  *                                 description (#20); the agent cannot self-grant or forge approval.
  */
+import './bootstrap'; // lockdown() first — real SES harden for the whole run
 import { makeCapability } from './capability';
 import { bottom, label, source } from './label';
 import type { Grantable, OperatorConsole } from './powerbox';

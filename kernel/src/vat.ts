@@ -22,7 +22,8 @@ export type AuditEvent =
   | 'invoke-ok'
   | 'grant-request'
   | 'grant-ok'
-  | 'grant-denied';
+  | 'grant-denied'
+  | 'revoked';
 
 export interface AuditEntry {
   readonly turn: number;
@@ -35,7 +36,8 @@ export type ActResult =
   | { readonly ok: true; readonly tool: string; readonly value: unknown }
   | { readonly ok: false; readonly blocked: 'no-authority'; readonly tool: string }
   | { readonly ok: false; readonly blocked: 'flow'; readonly tool: string; readonly reasons: readonly string[] }
-  | { readonly ok: false; readonly blocked: 'grant-denied'; readonly tool: string; readonly reason: string };
+  | { readonly ok: false; readonly blocked: 'grant-denied'; readonly tool: string; readonly reason: string }
+  | { readonly ok: false; readonly blocked: 'revoked'; readonly tool: string; readonly reason: string };
 
 /** The reserved verb a model emits to ask the powerbox for a capability it does not yet hold. */
 export const REQUEST_CAPABILITY = 'request_capability';
@@ -123,18 +125,25 @@ export class Vat {
       return harden({ ok: false, blocked: 'no-authority', tool: toolName });
     }
 
-    // Flow gate (global IFC): is the current turn's label cleared for this sink?
-    const verdict = flowCheck(this.turnLabel, cap.clearance, opts?.endorsed ?? false);
-    if (!verdict.ok) {
-      this.record('flow-block', `${cap.kind}: ${verdict.reasons.join(' | ')}`);
-      return harden({ ok: false, blocked: 'flow', tool: cap.kind, reasons: verdict.reasons });
-    }
+    // A cap held behind a revoked membrane throws on any access — surface it as `revoked`, not a crash.
+    try {
+      // Flow gate (global IFC): is the current turn's label cleared for this sink?
+      const verdict = flowCheck(this.turnLabel, cap.clearance, opts?.endorsed ?? false);
+      if (!verdict.ok) {
+        this.record('flow-block', `${cap.kind}: ${verdict.reasons.join(' | ')}`);
+        return harden({ ok: false, blocked: 'flow', tool: cap.kind, reasons: verdict.reasons });
+      }
 
-    // Both gates passed — perform the effect (with the trusted invocation context), then absorb.
-    const result = await cap.invoke(arg, { requesterLabel: this.turnLabel, requester: this.name });
-    this.absorb(result.label, `${cap.kind} returned ${fmtLabel(result.label)}`);
-    this.record('invoke-ok', `${cap.kind} performed`);
-    return harden({ ok: true, tool: cap.kind, value: result.value });
+      // Both gates passed — perform the effect (with the trusted invocation context), then absorb.
+      const result = await cap.invoke(arg, { requesterLabel: this.turnLabel, requester: this.name });
+      this.absorb(result.label, `${cap.kind} returned ${fmtLabel(result.label)}`);
+      this.record('invoke-ok', `${cap.kind} performed`);
+      return harden({ ok: true, tool: cap.kind, value: result.value });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      this.record('revoked', `${toolName}: ${msg}`);
+      return harden({ ok: false, blocked: 'revoked', tool: toolName, reason: msg });
+    }
   }
 
   /**

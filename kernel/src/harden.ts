@@ -1,11 +1,15 @@
 /**
  * `harden` — make an object tamper-proof so a capability cannot be forged or mutated.
  *
- * Phase-1a uses `Object.freeze`. In production this becomes SES's transitive `harden()`
- * (after `lockdown()`), per ADR 0001's control-plane choice. The object-capability *patterns*
- * here are identical — unforgeable references via closure encapsulation, frozen objects — SES
- * just makes the freeze deep and tamper-proof against a hostile realm.
+ * After the Endo bootstrap (`src/bootstrap.ts`) calls `lockdown()`, this delegates to SES's global
+ * `harden()` — a TRANSITIVE freeze that walks the whole own-reference graph and is enforced against
+ * frozen intrinsics, so a hostile realm cannot tamper with a cap or its prototype chain. Without the
+ * bootstrap it falls back to a shallow `Object.freeze`, keeping modules usable in either mode.
  *
- * Swap path: `import 'ses'; lockdown();` then re-export the global `harden`. No call-site changes.
+ * The check is at call time, so import order never matters: once lockdown has run, every harden() is
+ * the real one. Per ADR 0001 the production control plane always runs under lockdown.
  */
-export const harden = <T>(x: T): T => Object.freeze(x) as T;
+export const harden = <T>(x: T): T => {
+  const sesHarden = (globalThis as { harden?: <U>(value: U) => U }).harden;
+  return sesHarden ? sesHarden(x) : (Object.freeze(x) as T);
+};
