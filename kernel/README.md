@@ -22,12 +22,19 @@ pnpm demo:model         # milestone 4: model-as-oracle — constrained decoding 
 pnpm demo:hardened      # hardening: SES lockdown + tamper-proof caps + transitive revocable membrane
 pnpm demo:distribution  # CapTP: cross-vat capabilities, promise pipelining, revocation across the wire
 pnpm demo:microkernel   # #19: all raw authority behind a 4-method core; caps can't be invoked off-path
+pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
 #   AEGIS_MODEL_URL=http://localhost:11434/v1/chat/completions pnpm demo:model
 ```
 
 Each demo exits nonzero if any guarantee fails.
+
+`pnpm test` runs the **vitest** suite: unit tests for the pure logic (labels/flow, the global
+separation-of-duties checker, the microkernel, the transitive membrane, the model-oracle's constrained
+decoding + replay, the powerbox) plus an integration test that spawns **every demo** and asserts it
+exits 0 — so the full lockdown path is CI-gated, not demo-as-test. (Unit tests run without lockdown via
+the `Object.freeze` fallback; the integration test exercises the real SES path in subprocesses.)
 
 ## What it proves
 
