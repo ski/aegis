@@ -33,8 +33,8 @@ actually owns.
 **Phasing:**
 1. Linux base + WASM/WASI + hardened control plane. iGPU acceleration here.
 2. MicroVM the untrusted components (Firecracker-style). Still Linux.
-3. seL4 + Genode verified floor — earned, optional; buys a machine-checked confinement theorem; CPU
-   inference carries it.
+3. seL4 + Genode verified floor — earned, optional; buys machine-checked *kernel isolation between
+   components* (not a proof of our enforcement logic — see issue #4); CPU inference carries it.
 
 ## Rationale
 

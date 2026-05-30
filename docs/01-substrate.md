@@ -73,9 +73,11 @@ recovery, manipulation-resistance, and petname nuance all degrade). Finding the 
    demonstrable "injection can't escalate." iGPU acceleration available here.
 2. **MicroVM the untrusted components** (Firecracker / Cloud-Hypervisor) for hardware-grade
    isolation of inference and outward-facing tools. Still Linux.
-3. **seL4 + Genode floor** — *earned, optional.* Buys a **machine-checked confinement theorem**.
-   CPU inference carries this phase (iGPU here is Intel-only research). Adopt only if "provably
-   cannot escalate" is the product's reason to exist.
+3. **seL4 + Genode floor** — *earned, optional.* Buys **machine-checked kernel isolation between
+   components** (issue #4) — note this proves the *kernel's* isolation, **not** our control-plane
+   enforcement logic, which remains a large unverified component even here. CPU inference carries this
+   phase (iGPU here is Intel-only research). Adopt only if a verified isolation floor is the product's
+   reason to exist.
 
 Steps 1–2 give ~90% of the security at ~10% of the cost; step 3 is for when the pitch is literally
 "verified AI confinement."

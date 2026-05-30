@@ -90,8 +90,12 @@ everything composes; get it wrong and you've rebuilt ambient authority with extr
 - **Explicitly out of the trusted base:** the model/inference engine, every tool that touches the
   outside world, all native blobs.
 - **Goals:** (1) no authority escalation under injection — guaranteed structurally by ocaps;
-  (2) no data exfiltration through held authority — guaranteed by IFC; (3) provable confinement —
-  a machine-checkable account of what each agent *could* do and why.
+  (2) no injection-driven *actions* — guaranteed by IFC-integrity; (2b) no data exfiltration through
+  held authority — *aspirational*: sound only where data is structured enough to declassify; general
+  free-text confidentiality is the hard research track, not a phase-1 guarantee (issue #2);
+  (3) **structural + auditable** confinement — an auditable account of what authority each agent was
+  endowed with and why. *Not* "proven the agent couldn't escalate": seL4's proofs cover kernel
+  isolation, not our (unverified) enforcement logic (issue #4).
 - **Residual / not fully solved:** covert channels (timing, tool-choice encoding), the semantic
   correctness of declassifiers, and the model simply being *unhelpful* (ocaps bound blast radius,
   not competence).
@@ -104,7 +108,8 @@ everything composes; get it wrong and you've rebuilt ambient authority with extr
   sinks without endorsement).
 - All three enforced at **one membrane**, on **every send**, over **single-threaded turns**.
 - **Label-creep** dissolved by **vat compartmentalization** — the same decomposition that splits
-  authority splits data.
+  authority splits data, *enforced as a trusted-base separation-of-duties invariant, not left to the
+  untrusted model's task-split* (issue #1).
 
 > **Ocaps answer "could it act?" Information-flow answers "should this data move?" —
 > both at one gate, or a least-authority agent still leaks.**

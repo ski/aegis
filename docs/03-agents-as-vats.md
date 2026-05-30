@@ -39,6 +39,17 @@ that the child receives only caps the parent already holds, attenuated no weaker
 The model's proposal cannot *widen* authority — only subtract. POLA is preserved by construction down
 the entire spawn tree.
 
+> **Caveat (issue #1): narrowing is not enough — the trusted base must also enforce separation of
+> duties.** "Child ⊑ parent" bounds the *magnitude* of a child's authority but not its *composition*.
+> A prompt-injected model could propose a *non-compartmentalizing* split — handing one child *both* a
+> `secret`-labeled read cap and an uncleared outbound cap (both ⊑ parent) — which is exactly the
+> exfiltration combination IFC relies on compartmentalization to prevent (see
+> [04-information-flow](04-information-flow.md)). Compartmentalization therefore **cannot be a model
+> decision.** The spawn primitive must additionally enforce a structural **separation-of-duties
+> invariant** drawn from policy, independent of how the model wants to decompose — e.g. *"no single vat
+> may simultaneously hold a `secret`-labeled read cap and an uncleared outbound cap."* The model
+> proposes the split; the trusted base refuses any split that violates the invariant.
+
 ## Membranes and transitive attenuation
 
 "Hand over less than you hold" is the **membrane**, and the part that makes it *correct* rather than
@@ -93,8 +104,17 @@ revocation works across the network. Two pieces matter:
   **inference as an external nondeterministic oracle whose output is logged.** Given the logged
   result, the turn is deterministic — so you can checkpoint and *replay an agent's entire causal
   history* for debugging and audit.
-- **Provable confinement (the governance dividend).** Because all authority is cap-passing messages
-  over single-threaded turns, you get a causal log: *agent X could do Y because it held cap C, endowed
-  by Z at turn T.* You can **prove an agent couldn't have done something** — which ACL/identity systems
-  fundamentally cannot. For AI governance that's the whole ballgame: not "we sandboxed it," but a
-  machine-checkable account of exactly what each agent was capable of, and why.
+- **Structural + auditable confinement (the governance dividend).** Because all authority is cap-passing
+  messages over single-threaded turns, you get a causal log: *agent X could do Y because it held cap C,
+  endowed by Z at turn T.* You can **show exactly which caps an agent held** — which ACL/identity systems
+  fundamentally cannot. For AI governance that's most of the ballgame: not "we sandboxed it," but an
+  auditable account of exactly what authority each agent was endowed with, and why.
+
+  > **Honesty about the word "proof" (issue #4).** This is *structural and auditable*, not *proven*. Two
+  > limits: (1) seL4's machine-checked proofs cover the *kernel's isolation between components* — **not**
+  > our control-plane enforcement logic (membranes, resolver, IFC checks, spawn invariants), which is a
+  > large unverified component in every phase. (2) Knowing the cap *set* is bounded is not the same as
+  > knowing the reachable *effect* is bounded, because a cap to a broker or to an agent-object is
+  > transitively as powerful as whatever that object does — and agent-objects contain untrusted models.
+  > So we claim **structural + auditable** confinement; we reserve "**proven**" strictly for the seL4
+  > kernel-isolation property at phase 3, never for "the agent cannot escalate."
