@@ -21,6 +21,7 @@ pnpm demo:wasm          # milestone 3: a real WASM tool is a capability with zer
 pnpm demo:model         # milestone 4: model-as-oracle — constrained decoding + deterministic replay
 pnpm demo:hardened      # hardening: SES lockdown + tamper-proof caps + transitive revocable membrane
 pnpm demo:distribution  # CapTP: cross-vat capabilities, promise pipelining, revocation across the wire
+pnpm demo:microkernel   # #19: all raw authority behind a 4-method core; caps can't be invoked off-path
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
 #   AEGIS_MODEL_URL=http://localhost:11434/v1/chat/completions pnpm demo:model
@@ -66,6 +67,8 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-model.ts` | milestone 4: messy model text → tool-calls; guarantees invariant under model swap; deterministic replay |
 | `src/demo-hardened.ts` | hardening: lockdown active, tamper-proof caps, Far, transitive membrane, cascading-revoke kill-switch |
 | `src/demo-distribution.ts` | CapTP: cross-vat caps, promise pipelining, confinement + revocation across a wire |
+| `src/microkernel.ts` | #19 core: all raw authority behind a 4-method kernel + a private sealed registry |
+| `src/demo-microkernel.ts` | #19: off-path invocation is structurally impossible; dual gate in the small core |
 
 ## Honest scope (what this is NOT yet)
 
@@ -117,3 +120,8 @@ Tracked against the design's known gaps:
   host capability via `E()` with promise pipelining; confinement holds across the boundary; the host's
   revocation reaches the guest. In-process loopback now — swap the channel for a socket/worker and
   nothing else changes (docs/03 OCapN).
+- [x] **Membrane microkernel — #19 (progress)** (`pnpm demo:microkernel`): all raw authority lives
+  behind a **4-method core** (`mint`/`invoke`/`attenuate`/`revoke`) and one closure-private registry.
+  A cap handle exposes only metadata and **cannot be invoked off-path** — the only door to authority is
+  the kernel, where the dual gate and cascading revocation live. This shrinks the JS-level trusted
+  surface; *separately-verifiable* (the seL4 floor) remains the phase-3 completion of #19.
