@@ -74,6 +74,12 @@ access to their email"). Non-negotiables:
 - **Every grant request carries provenance/taint** — was it triggered by untrusted content the
   agent just read? (See [04-information-flow](04-information-flow.md).)
 - **Grants are legible and logged** — what was granted, to whom, why, traceable.
+- **The grant UI is a trusted path (issue #17).** The human perceives the system only through output
+  the *untrusted agent renders*, so an injected agent can draw a fake powerbox ("Click Allow to
+  continue") or obscure the real one. The grant dialog must therefore be drawn by the **trusted base**,
+  in a way the agent provably cannot imitate, obscure, or trigger without the human's genuine attention
+  (the classic secure-attention / unspoofable-UI guarantee). Without a trusted path, powerbox fatigue is
+  the *optimistic* failure mode — the pessimistic one is the human approving a grant they never actually saw.
 
 ## The universal-object frame
 
@@ -122,3 +128,11 @@ LLMs traffic in forgeable strings; ocaps require unforgeable references. The bri
 
 The resolver is the membrane between the two registers — names for talking, caps for acting — and
 the powerbox is what you hit when the model names a petname the human hasn't yet bound to a cap.
+
+> **Petname confusion is a confused deputy at the naming layer (issue #20).** Because the *model*
+> proposes petnames, confusable labels — two clients both called "Acme," a trailing-space homograph —
+> let a grant the human approves for client A silently bind to client B. This is the known-hard
+> petname / Zooko's-triangle problem, and it compounds the trusted-path requirement above: the resolver
+> owns petname uniqueness per principal, surfaces collisions for disambiguation at grant time, and the
+> grant dialog presents the **canonical, normalized, unspoofable** petname — never an agent-supplied
+> lookalike.

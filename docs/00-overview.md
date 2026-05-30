@@ -99,6 +99,13 @@ everything composes; get it wrong and you've rebuilt ambient authority with extr
 - **Residual / not fully solved:** covert channels (timing, tool-choice encoding), the semantic
   correctness of declassifiers, and the model simply being *unhelpful* (ocaps bound blast radius,
   not competence).
+- **Central architectural risk (issue #19):** every security property routes through the control
+  plane (membranes, resolver, IFC checks, spawn invariant, declassify/endorse), so it is the universal
+  chokepoint *and* the universal target — one bug there and all attenuation collapses at once. Today
+  that totally-trusted surface is a large interpreter (hardened-JS/Goblins runtime), not a small
+  auditable core, and seL4 (phase 3) isolates components from each other but not the control-plane logic
+  from its own bugs. The long answer is a **minimized, separately-verifiable membrane core** — a
+  "capability microkernel." Named here so it isn't mistaken for solved.
 
 ## The unifying frame
 

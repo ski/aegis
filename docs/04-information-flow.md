@@ -156,6 +156,63 @@ Therefore phase 1 is scoped **integrity-first**:
 This keeps every phase-1 claim defensible: we can *prove an action was blocked*; we do *not* yet claim we
 can stop a determined model from *encoding* a secret it was shown into otherwise-clean output.
 
+## The asymmetry the dual hides: revoke authority, decay information
+
+Ocaps and IFC are duals, but they are **not symmetric in time** — and the first design missed this.
+
+> **Authority is revocable. Information is not.** Dropping a membrane makes an agent inert for *future
+> actions*; it does nothing about a secret the agent *already read*. That secret is in its context, its
+> logs, its memory. You can revoke a capability; **you cannot revoke knowledge** (issue #18).
+
+This single asymmetry has three consequences that reshape the confidentiality half.
+
+### 1 — Enforce confidentiality at *ingestion*, not at output (issue #15)
+
+If absorption is irreversible, gating the *output* of a turn is already too late: by then the secret and
+the untrusted instruction have mixed in the latent state, and the model may have *encoded* a leak (issue #2)
+that no output check can catch. So invert it. A trusted **context assembler** decides what may enter a
+prompt and **refuses to co-mingle labels that must not meet.** You never let the mixing happen, so there is
+nothing to detect afterward.
+
+> **Pre-inference prevention strictly dominates post-inference detection.** Control the context, don't gate
+> the output.
+
+(Irreducible limit: some tasks genuinely *require* co-mingling — "is this untrusted email relevant to my
+secret project?" For that class you fall back to label-the-turn + endorsement, and it is expensive.)
+
+### 2 — Labels must persist into memory (issue #16)
+
+"Label-the-turn" is incomplete because agents *remember*. A secret seen in turn 5 lives in turns 6..N, and
+if written to a vector store / summary / long-term memory it can leak across **sessions** and across **vats
+that share a memory store.** So labels follow data **into** memory, any recall **re-taints** the recalling
+turn with the joined label, and memory stores are themselves capability-scoped — never ambient. Persistent
+memory is exactly where crown-jewel secrets accumulate; this layer is not optional.
+
+### 3 — Prefer secrets that decay faster than they leak (issue #18)
+
+The deepest move, and it comes from taking irreversibility seriously rather than fighting it:
+
+> **I1 is not a defect — it is a law of the universe, and the law carries its own remedy.** Information tends
+> to replicate and become redundant; *replication is the decay of its value.* A secret known to everyone is
+> worthless. Exfiltration is therefore the *beginning of a secret's devaluation*, not only its compromise.
+
+So stop trying to protect static secrets forever (impossible against a mixing model). Make the only secrets
+the model ever sees **ephemeral by construction** — single-use / short-TTL / freshly-derived tokens — so a
+leaked copy is **dead on arrival.** This is the ocap *lease* applied to *data*:
+
+- ocaps make **authority** ephemeral and attenuable (leases, caretakers);
+- this makes **information** ephemeral and decaying (rotation, single-use, TTL).
+
+The dual is completed: **both authority and information are leased, decaying resources — never permanent
+possessions.** Confidentiality stops being a wall you maintain forever and becomes a **race you win by
+expiry**: rotate faster than the leak can be exploited, and replication-decay finishes the secret before the
+attacker can use it.
+
+**Boundary (honest).** This wins for *credential-class* secrets (auth material, derived tokens). It does
+**not** win for *durable-semantic* secrets (PII, an M&A target, a medical fact) whose value doesn't expire on
+rotation. Partition accordingly: ephemeral secrets → design to decay (race-win); durable-semantic secrets →
+prevention (§1 above, never co-mingle with untrusted content).
+
 ## Residual / not fully solved
 
 - **Covert channels** — a model that saw a secret can leak through timing, tool-choice, or subtle

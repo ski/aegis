@@ -75,3 +75,28 @@ Quick reference for the vocabulary used across the Aegis docs.
 
 - **POLA** — Principle of Least Authority: every component holds exactly the authority its job needs and
   no more. In Aegis it falls out of handing the right facet, not from writing a policy.
+
+- **Separation-of-duties invariant** — a trusted-base rule the spawn primitive enforces regardless of how
+  the model decomposes a task (e.g. "no single vat may hold a `secret`-read cap and an uncleared outbound
+  cap"). Makes compartmentalization a guarantee, not a model decision. (Issue #1.)
+
+- **Context assembler** — the trusted component that decides what may enter a prompt and refuses to
+  co-mingle labels that must not meet. Enforces confidentiality at *ingestion* (prevention) rather than at
+  *output* (detection). (Issue #15.)
+
+- **Labeled memory** — persistent memory (history, RAG, vector store) where stored data carries its IFC
+  label and any recall re-taints the recalling turn. Closes the cross-session / cross-vat leak that
+  label-the-turn alone misses. (Issue #16.)
+
+- **Trusted path** — an unspoofable channel between the human and the trusted base (e.g. the grant dialog),
+  drawn so the untrusted agent cannot imitate, obscure, or trigger it without the human's genuine attention.
+  The secure-attention guarantee. (Issue #17.)
+
+- **Ephemeral secret / information lease** — a secret made short-lived by construction (single-use, short
+  TTL, freshly derived) so a leaked copy is dead on arrival. The ocap lease applied to *data*: authority and
+  information are both leased, decaying resources, never permanent possessions. Wins for credential-class
+  secrets, not durable-semantic ones. (Issue #18.)
+
+- **Membrane microkernel** — the aspirational minimized, separately-verifiable core that all control-plane
+  enforcement would build on, so the totally-trusted surface is small enough to audit. Answer to the control
+  plane being a single point of total failure. (Issue #19.)

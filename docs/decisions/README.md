@@ -24,12 +24,27 @@ First adversarial pass against the four design docs produced 13 findings, tracke
 - **#4** (`blocks-phase-1`, `honesty`) — "provable confinement" walked back to **structural +
   auditable**; "proven" reserved for seL4 kernel isolation. Folded into README, 00, 01, 03, 04.
 
-The remaining findings (#3, #5–#13) are tracked but not yet addressed.
+The remaining wave-1 findings (#3, #5–#13) are tracked but not yet addressed.
+
+**Second adversarial pass** produced 7 more findings, [issues #14–#20](https://github.com/ski/aegis/issues),
+going after pillars the architecture didn't model. Doc-actionable ones were folded in immediately:
+
+- **#15** (F1) — enforce confidentiality at *ingestion* (context assembler), not output. → [04 §asymmetry](../04-information-flow.md)
+- **#16** (G1) — labels must persist into memory (labeled-memory layer). → [04 §asymmetry](../04-information-flow.md)
+- **#17** (H1) — the powerbox needs a *trusted path* (unspoofable grant UI). → [02 §powerbox](../02-capabilities-and-resolution.md)
+- **#18** (I1) — you can't revoke knowledge; **design secrets to decay** (ephemerality / leased information). → [04 §asymmetry](../04-information-flow.md)
+- **#19** (J1) — the control plane is a single point of total failure; needs a minimized verifiable membrane core. → [00 §threat model](../00-overview.md)
+- **#20** (L1) — petname confusion is a confused deputy at the naming layer. → [02 §petnames](../02-capabilities-and-resolution.md)
+
+**#14** (E1) is a *strategy* decision, not a code fix — see open threads below.
 
 ## Threads still open (not yet ADR'd)
 
+- **Personal-OS vs. platform (issue #14, candidate ADR 0002).** Cap-purity is all-or-nothing; an ecosystem
+  has a chicken-and-egg adoption problem, a single-tenant personal OS does not (you write all the tools).
+  Recommendation: the personal-OS framing — it dissolves #14, #12, and half of #7. **Needs a deliberate call.**
 - Powerbox grant protocol — what the UI/flow looks like, how provenance gates a grant, how an injected
-  grant-request dies (issues #7, #9). Discussed in
+  grant-request dies, and the trusted-path mechanism (issues #7, #9, #17). Discussed in
   [02](../02-capabilities-and-resolution.md); not yet locked.
-- Phase-1 buildable kernel scope — the minimal runnable system (one agent, a powerbox, a few real caps,
-  an integrity-first prompt-injection demo that *structurally* fails to escalate).
+- Phase-1 buildable kernel scope — the minimal runnable system (one agent, a powerbox with a trusted path,
+  a few real caps, an integrity-first prompt-injection demo that *structurally* fails to escalate).
