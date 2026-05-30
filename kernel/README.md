@@ -23,6 +23,7 @@ pnpm demo:hardened      # hardening: SES lockdown + tamper-proof caps + transiti
 pnpm demo:distribution  # CapTP: cross-vat capabilities, promise pipelining, revocation across the wire
 pnpm demo:microkernel   # #19: all raw authority behind a 4-method core; caps can't be invoked off-path
 pnpm demo:model:http    # real model end-to-end over HTTP (OpenAI-compatible adapter, real round-trips)
+pnpm demo:isolation     # phase-2 substrate: an untrusted tool confined to its own OS process behind a cap
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
@@ -77,6 +78,9 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-distribution.ts` | CapTP: cross-vat caps, promise pipelining, confinement + revocation across a wire |
 | `src/microkernel.ts` | #19 core: all raw authority behind a 4-method kernel + a private sealed registry |
 | `src/demo-microkernel.ts` | #19: off-path invocation is structurally impossible; dual gate in the small core |
+| `src/demo-model-http.ts` | real model end-to-end over HTTP (OpenAI-compatible adapter + local mock server) |
+| `src/tool-worker.ts` / `src/process-tool.ts` | an isolated tool in its own OS process, wrapped as a capability |
+| `src/demo-isolation.ts` | phase-2 substrate: process isolation behind a typed cap (microVM is the next rung) |
 
 ## Honest scope (what this is NOT yet)
 
@@ -137,3 +141,8 @@ Tracked against the design's known gaps:
   drives the agent through the real `fetch` adapter — constrained decoding and the membrane on the live
   transport. Only the weights are mocked; point `AEGIS_MODEL_URL` at Ollama/llama.cpp for a real model
   (`ollama run llama3.2:1b` then `AEGIS_MODEL_URL=…:11434/v1/chat/completions pnpm demo:model`).
+- [x] **Phase-2 substrate — isolation plane** (`pnpm demo:isolation`): an untrusted tool runs in its
+  own OS process, wrapped as a capability and driven through the membrane; it shares no memory and
+  holds none of the parent's caps, its output is labeled by provenance, and killing it severs the cap.
+  Process isolation is the rung below a **microVM** (Firecracker) — the hardware-isolated version of the
+  same shape, reached the same way.
