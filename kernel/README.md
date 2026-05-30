@@ -20,6 +20,7 @@ pnpm demo:powerbox      # milestone 2: brokered grants — manufactured grants d
 pnpm demo:wasm          # milestone 3: a real WASM tool is a capability with zero ambient authority
 pnpm demo:model         # milestone 4: model-as-oracle — constrained decoding + deterministic replay
 pnpm demo:hardened      # hardening: SES lockdown + tamper-proof caps + transitive revocable membrane
+pnpm demo:distribution  # CapTP: cross-vat capabilities, promise pipelining, revocation across the wire
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
 #   AEGIS_MODEL_URL=http://localhost:11434/v1/chat/completions pnpm demo:model
@@ -64,6 +65,7 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/model-oracle.ts` | model-as-oracle: constrained decoding (validate+retry), inference log, replay, OpenAI-compatible adapter |
 | `src/demo-model.ts` | milestone 4: messy model text → tool-calls; guarantees invariant under model swap; deterministic replay |
 | `src/demo-hardened.ts` | hardening: lockdown active, tamper-proof caps, Far, transitive membrane, cascading-revoke kill-switch |
+| `src/demo-distribution.ts` | CapTP: cross-vat caps, promise pipelining, confinement + revocation across a wire |
 
 ## Honest scope (what this is NOT yet)
 
@@ -111,3 +113,7 @@ Tracked against the design's known gaps:
   **transitive revocable membrane**: a sub-cap reached through a membrane dies when it is revoked
   (cascading revocation), wired into the vat as a kill-switch. (Note: this hardens the *realm*; it
   does not shrink the TCB — #19 still stands.)
+- [x] **Distribution — CapTP** (`pnpm demo:distribution`): two vats over a channel; a guest invokes a
+  host capability via `E()` with promise pipelining; confinement holds across the boundary; the host's
+  revocation reaches the guest. In-process loopback now — swap the channel for a socket/worker and
+  nothing else changes (docs/03 OCapN).
