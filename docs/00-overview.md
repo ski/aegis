@@ -80,6 +80,9 @@ everything composes; get it wrong and you've rebuilt ambient authority with extr
 
 ## Threat model (working)
 
+- **Scope:** a **single-tenant personal OS** — one human root, the operator supplies/vets all tools
+  ([ADR 0002](decisions/0002-personal-os-not-platform.md)). Multi-tenant isolation is explicitly out of
+  scope; there is exactly one principal whose authority everything derives from.
 - **Adversary:** any content the agent ingests (web pages, emails, documents, tool outputs) is
   attacker-controlled and may contain instructions. The model may be manipulated into *any*
   behavior expressible through the authority it holds.

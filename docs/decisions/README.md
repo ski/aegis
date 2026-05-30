@@ -6,6 +6,7 @@ discussion; the design docs in `docs/` reference back to these for the "why."
 | # | Decision | Status | Date |
 | --- | --- | --- | --- |
 | [0001](0001-substrate.md) | Substrate — laptop target, CPU-floor inference, WASM/WASI control plane, optional seL4 floor | Accepted | 2026-05-30 |
+| [0002](0002-personal-os-not-platform.md) | Aegis is a single-tenant personal OS, not a multi-tenant platform (resolves #14) | Accepted | 2026-05-30 |
 
 ## Pressure-test (2026-05-30)
 
@@ -40,9 +41,8 @@ going after pillars the architecture didn't model. Doc-actionable ones were fold
 
 ## Threads still open (not yet ADR'd)
 
-- **Personal-OS vs. platform (issue #14, candidate ADR 0002).** Cap-purity is all-or-nothing; an ecosystem
-  has a chicken-and-egg adoption problem, a single-tenant personal OS does not (you write all the tools).
-  Recommendation: the personal-OS framing — it dissolves #14, #12, and half of #7. **Needs a deliberate call.**
+- ~~Personal-OS vs. platform (issue #14)~~ — **resolved: [ADR 0002](0002-personal-os-not-platform.md),
+  single-tenant personal OS.** Dissolves #14, makes #12 tractable, softens #7.
 - Powerbox grant protocol — what the UI/flow looks like, how provenance gates a grant, how an injected
   grant-request dies, and the trusted-path mechanism (issues #7, #9, #17). Discussed in
   [02](../02-capabilities-and-resolution.md); not yet locked.
