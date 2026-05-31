@@ -31,6 +31,8 @@ pnpm demo:policy        # #31: only the operator's admin cap may change policy; 
 pnpm demo:assistant     # capstone: a confined document assistant doing a real task on real files
 pnpm demo:space         # a capability-scoped, labeled, leased tuple space (JavaSpaces ∩ ocap ∩ IFC ∩ leases)
 pnpm demo:docker        # the Docker isolation rung — a tool in a hardened container (skips live if no Docker)
+pnpm demo:store         # unify labeled memory (keyed) and the labeled space (associative) — one store, two faces
+pnpm demo:space:distributed  # the labeled space distributed over CapTP — coordination across machines
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
@@ -99,6 +101,9 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-space.ts` | decoupled coordination scoped by caps, labeled by IFC, decaying by lease |
 | `src/docker-tool.ts` | spawn a tool in a hardened container (no caps/network, read-only, bounded) as a cap |
 | `src/demo-docker.ts` | the Docker isolation rung; runs live where Docker exists, else verifies the argv |
+| `src/store.ts` | unified labeled+leased store: keyed (`kv`) + associative (`space`) faces over one core |
+| `src/demo-store.ts` | one store, two faces — labeled memory and the labeled space unified |
+| `src/demo-space-distributed.ts` | the labeled space over CapTP — coordination across a wire |
 
 ## Honest scope (what this is NOT yet)
 
@@ -195,3 +200,11 @@ Tracked against the design's known gaps:
   network**, the tool's *only* channel is the capability. Rung ladder: child process &lt; **Docker
   (namespaces)** &lt; gVisor &lt; microVM (Firecracker/Kata). Runs live where Docker exists; verifies the
   confinement argv and skips the live run otherwise (stays green in CI).
+- [x] **Unified labeled store** (`pnpm demo:store`): labeled memory (keyed) and the labeled space
+  (associative) are one capability-secure, labeled, leased store with two faces — a keyed `kv` put is the
+  same entry the associative `space` face sees (keyed = template on the `__key` field). Facet attenuation,
+  label-travel, clearance filtering, and leasing all hold on both faces.
+- [x] **Distributed labeled space over CapTP** (`pnpm demo:space:distributed`): the coordination fabric —
+  a space on a host vat, a worker vat holding only a remote *facet* coordinating with `E()` across a
+  CapTP channel. Decoupled coordination spans machines; facet attenuation and label-travel survive the
+  wire. Loopback channel now; swap for a socket and it's multi-machine.

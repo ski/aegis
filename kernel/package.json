@@ -23,7 +23,9 @@
     "demo:policy": "tsx src/demo-policy.ts",
     "demo:assistant": "tsx src/demo-assistant.ts",
     "demo:space": "tsx src/demo-space.ts",
-    "demo:docker": "tsx src/demo-docker.ts"
+    "demo:docker": "tsx src/demo-docker.ts",
+    "demo:store": "tsx src/demo-store.ts",
+    "demo:space:distributed": "tsx src/demo-space-distributed.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

@@ -72,12 +72,25 @@ same lease-by-default discipline as the rest of the kernel (#18 "design informat
   fan-out. They compose: a space shared across machines *over* CapTP is a **distributed coordination
   fabric** — the fleet vision, but capability-clean.
 
-## Convergence: the space and labeled memory are one family
+## Convergence: the space and labeled memory are one family — now unified
 
 The [labeled memory](04-information-flow.md) store (#16) and this space are the same idea at two
-interfaces — **keyed** vs **associative** — both label-preserving and cap-scoped. They want to unify into
-a single *capability-secure, labeled, leased store*, with the space as the richer (template-matched,
-leased) front end and labeled memory as the keyed special case.
+interfaces — **keyed** vs **associative** — both label-preserving and cap-scoped. **This is now
+implemented as one store** (`kernel/src/store.ts`, `pnpm demo:store`): a single labeled, leased core
+exposed through a keyed `kv` facet (labeled memory) and an associative `space` facet (the tuple space).
+Keyed is the special case where the template matches the `__key` field — a `kv.put('g', …)` is the very
+entry `space.read({__key:'g'})` returns. Facet attenuation, label-travel, clearance filtering, and
+leasing all hold on both faces.
+
+## Distributed over CapTP
+
+The space composes with [CapTP](03-agents-as-vats.md) into a **coordination fabric**
+(`kernel/src/demo-space-distributed.ts`, `pnpm demo:space:distributed`): the store lives on a host vat;
+a worker vat on the far end of a CapTP channel holds only a remote *facet* and coordinates with `E()`.
+Decoupled coordination spans machines, and the discipline survives the wire unchanged — the worker holds
+a facet (not the store) so only granted methods exist, and entry labels travel back across the channel
+(a confidential result written remotely arrives labeled on the host). Loopback channel today; swap it for
+a socket and it is a multi-machine fabric — the fleet vision, capability-clean.
 
 ## Honest limits (v1)
 
