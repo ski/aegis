@@ -24,6 +24,7 @@ pnpm demo:distribution  # CapTP: cross-vat capabilities, promise pipelining, rev
 pnpm demo:microkernel   # #19: all raw authority behind a 4-method core; caps can't be invoked off-path
 pnpm demo:model:http    # real model end-to-end over HTTP (OpenAI-compatible adapter, real round-trips)
 pnpm demo:isolation     # phase-2 substrate: an untrusted tool confined to its own OS process behind a cap
+pnpm demo:memory        # #16: labels survive memory — the across-session secret leak is closed
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
@@ -81,6 +82,8 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-model-http.ts` | real model end-to-end over HTTP (OpenAI-compatible adapter + local mock server) |
 | `src/tool-worker.ts` / `src/process-tool.ts` | an isolated tool in its own OS process, wrapped as a capability |
 | `src/demo-isolation.ts` | phase-2 substrate: process isolation behind a typed cap (microVM is the next rung) |
+| `src/labeled-memory.ts` | #16: a label-preserving, cap-scoped memory store + its write/recall caps |
+| `src/demo-memory.ts` | #16: plain store leaks across sessions; labeled memory closes it |
 
 ## Honest scope (what this is NOT yet)
 
@@ -146,3 +149,8 @@ Tracked against the design's known gaps:
   holds none of the parent's caps, its output is labeled by provenance, and killing it severs the cap.
   Process isolation is the rung below a **microVM** (Firecracker) — the hardware-isolated version of the
   same shape, reached the same way.
+- [x] **Labeled memory — #16** (`pnpm demo:memory`): closes the across-session leak. A secret written to
+  a *plain* store comes back unlabeled on recall and the flow gate lets it leave; **labeled memory** stores
+  the label with the value, so a later session that recalls it is re-tainted and the send is blocked
+  exactly as in-turn. Plugs in with no vat change — the write cap stamps the writer's true turn-label
+  (`ctx.requesterLabel`), the recall cap returns `{value, label}` which the vat already re-absorbs.

@@ -210,6 +210,11 @@ that share a memory store.** So labels follow data **into** memory, any recall *
 turn with the joined label, and memory stores are themselves capability-scoped — never ambient. Persistent
 memory is exactly where crown-jewel secrets accumulate; this layer is not optional.
 
+> **Implemented:** `kernel/src/labeled-memory.ts` (`pnpm demo:memory`). The write cap stamps each entry
+> with the writer's true turn-label (`ctx.requesterLabel`), the recall cap returns `{value, label}` which
+> the vat re-absorbs — so a secret written in one session and recalled in a later one is still labeled, and
+> the cross-session send is blocked at the flow gate exactly as in-turn.
+
 ### 3 — Prefer secrets that decay faster than they leak (issue #18)
 
 The deepest move, and it comes from taking irreversibility seriously rather than fighting it:

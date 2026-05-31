@@ -14,6 +14,7 @@ const demos = [
   'demo:microkernel',
   'demo:model:http',
   'demo:isolation',
+  'demo:memory',
 ];
 
 describe('demos exit 0 (integration, under lockdown)', () => {
