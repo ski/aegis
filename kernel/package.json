@@ -17,7 +17,10 @@
     "demo:isolation": "tsx src/demo-isolation.ts",
     "demo:memory": "tsx src/demo-memory.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "demo:clock": "tsx src/demo-clock.ts",
+    "demo:attestation": "tsx src/demo-attestation.ts",
+    "demo:policy": "tsx src/demo-policy.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

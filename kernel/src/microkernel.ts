@@ -30,17 +30,24 @@ type Effect = (arg: unknown, ctx: InvokeContext) => InvokeResult | Promise<Invok
 interface Entry {
   readonly effect: Effect;
   readonly parent?: CapHandle;
+  readonly expiresAt?: number; // a lease, measured against the kernel's trusted clock (issue #30)
   live: boolean;
 }
 
 export interface Kernel {
-  mint(spec: { kind: string; clearance: Clearance; effect: Effect }): CapHandle;
+  mint(spec: { kind: string; clearance: Clearance; effect: Effect; expiresAt?: number }): CapHandle;
   invoke(handle: CapHandle, arg: unknown, ctx: InvokeContext): Promise<InvokeResult>;
-  attenuate(handle: CapHandle, opts: { kind?: string; clearance?: Clearance }): CapHandle;
+  attenuate(handle: CapHandle, opts: { kind?: string; clearance?: Clearance; ttlMs?: number }): CapHandle;
   revoke(handle: CapHandle): void;
 }
 
-export function makeKernel(): Kernel {
+/**
+ * The kernel owns ONE trusted clock (issue #30). Leases are measured against it; nothing else reads
+ * time, so an agent cannot forge expiry — it never supplies a timestamp, and the effect functions don't
+ * read the clock. Inject a controllable clock for tests; the default is the host clock read here, in the
+ * trusted base, exactly once per check.
+ */
+export function makeKernel(clock: () => number = () => Date.now()): Kernel {
   // The entire raw authority of the system. Closure-private — unreachable from any handle or caller.
   const registry = new WeakMap<CapHandle, Entry>();
   let counter = 0;
@@ -48,21 +55,22 @@ export function makeKernel(): Kernel {
   const liveChain = (h: CapHandle): boolean => {
     const e = registry.get(h);
     if (!e || !e.live) return false;
+    if (e.expiresAt !== undefined && clock() >= e.expiresAt) return false; // lease expired
     return e.parent ? liveChain(e.parent) : true;
   };
 
   const kernel: Kernel = {
-    mint({ kind, clearance, effect }) {
+    mint({ kind, clearance, effect, expiresAt }) {
       counter += 1;
       const handle: CapHandle = harden({ id: `cap:${kind}:${counter}`, kind, clearance });
-      registry.set(handle, { effect, live: true });
+      registry.set(handle, { effect, live: true, expiresAt });
       return handle;
     },
 
     async invoke(handle, arg, ctx) {
       const e = registry.get(handle);
       if (!e) throw new Error('not a capability of this kernel');
-      if (!liveChain(handle)) throw new Error('capability revoked');
+      if (!liveChain(handle)) throw new Error('capability revoked or expired');
       const verdict = flowCheck(ctx.requesterLabel, handle.clearance);
       if (!verdict.ok) throw new Error(`flow: ${verdict.reasons.join('; ')}`);
       return e.effect(arg, ctx);
@@ -73,8 +81,10 @@ export function makeKernel(): Kernel {
       counter += 1;
       const kind = opts.kind ?? handle.kind;
       const derived: CapHandle = harden({ id: `cap:${kind}:${counter}`, kind, clearance: opts.clearance ?? handle.clearance });
-      // The derived effect forwards through the kernel, so revoking the parent cascades.
-      registry.set(derived, { effect: (a, c) => kernel.invoke(handle, a, c), parent: handle, live: true });
+      // ttlMs leases the derived cap against the kernel's trusted clock (issue #30).
+      const expiresAt = opts.ttlMs !== undefined ? clock() + opts.ttlMs : undefined;
+      // The derived effect forwards through the kernel, so revoking/expiring the parent cascades.
+      registry.set(derived, { effect: (a, c) => kernel.invoke(handle, a, c), parent: handle, live: true, expiresAt });
       return derived;
     },
 

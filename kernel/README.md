@@ -25,6 +25,9 @@ pnpm demo:microkernel   # #19: all raw authority behind a 4-method core; caps ca
 pnpm demo:model:http    # real model end-to-end over HTTP (OpenAI-compatible adapter, real round-trips)
 pnpm demo:isolation     # phase-2 substrate: an untrusted tool confined to its own OS process behind a cap
 pnpm demo:memory        # #16: labels survive memory — the across-session secret leak is closed
+pnpm demo:clock         # #30: leases expire against one trusted clock the agent cannot forge
+pnpm demo:attestation   # #29: verify an artifact's pinned hash before admitting it; tampered builds refused
+pnpm demo:policy        # #31: only the operator's admin cap may change policy; every change is audited
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
@@ -84,6 +87,10 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-isolation.ts` | phase-2 substrate: process isolation behind a typed cap (microVM is the next rung) |
 | `src/labeled-memory.ts` | #16: a label-preserving, cap-scoped memory store + its write/recall caps |
 | `src/demo-memory.ts` | #16: plain store leaks across sessions; labeled memory closes it |
+| `src/microkernel.ts` (leases) | #30: an injected trusted clock + TTL leases enforced by the kernel |
+| `src/attestation.ts` / `src/demo-attestation.ts` | #29: pin-and-verify artifact digests at admission |
+| `src/policy.ts` / `src/demo-policy.ts` | #31: admin-cap-gated, append-only-audited policy changes |
+| `src/demo-clock.ts` | #30: leased caps expire against the trusted clock |
 
 ## Honest scope (what this is NOT yet)
 
@@ -154,3 +161,10 @@ Tracked against the design's known gaps:
   the label with the value, so a later session that recalls it is re-tainted and the send is blocked
   exactly as in-turn. Plugs in with no vat change — the write cap stamps the writer's true turn-label
   (`ctx.requesterLabel`), the recall cap returns `{value, label}` which the vat already re-absorbs.
+- [x] **TCB-integrity trio** — tightening the trusted base:
+  - **#30 trusted clock** (`pnpm demo:clock`): the kernel owns one injected clock; leases expire against
+    it and the agent supplies no time, so expiry can't be forged.
+  - **#29 supply-chain attestation** (`pnpm demo:attestation`): an artifact is admitted only if its
+    content digest matches a pinned hash; a single tampered byte is refused at admission (ADR 0002).
+  - **#31 policy/upgrade gating** (`pnpm demo:policy`): policy changes require the operator-held,
+    unforgeable admin capability and are all written to an append-only audit log.

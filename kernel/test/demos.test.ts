@@ -15,6 +15,9 @@ const demos = [
   'demo:model:http',
   'demo:isolation',
   'demo:memory',
+  'demo:clock',
+  'demo:attestation',
+  'demo:policy',
 ];
 
 describe('demos exit 0 (integration, under lockdown)', () => {
