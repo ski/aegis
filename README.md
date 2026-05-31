@@ -68,9 +68,9 @@ The slogan that ties it together:
 
 ## Status
 
-**Phase 1 complete — the design is running code.** Reasoned from first principles, stress-tested
-through three adversarial passes (31 findings tracked as issues), and now demonstrated by five
-runnable demos in **[`kernel/`](kernel/)** (`cd kernel && pnpm install`):
+**The design is running code.** Reasoned from first principles, stress-tested through three adversarial
+passes (33 findings tracked as issues), and demonstrated by 19 runnable demos + 58 tests in
+**[`kernel/`](kernel/)** (`cd kernel && pnpm install && pnpm test`). Highlights:
 
 | Demo | Proves |
 | --- | --- |
@@ -79,6 +79,17 @@ runnable demos in **[`kernel/`](kernel/)** (`cd kernel && pnpm install`):
 | `pnpm demo:powerbox` | brokered grants — manufactured grants die at the gate; real grants flow over a trusted path (#7, #17, #20) |
 | `pnpm demo:wasm` | a real WASM tool is a capability with zero ambient authority (#D1) |
 | `pnpm demo:model` | model-as-oracle — constrained decoding + deterministic replay; guarantees invariant under model swap |
+| `pnpm demo:hardened` | SES lockdown + tamper-proof caps + a transitive revocable membrane (cascading revocation) |
+| `pnpm demo:distribution` | CapTP — cross-vat capabilities, promise pipelining, revocation across a wire |
+| `pnpm demo:microkernel` | all raw authority behind a 4-method core; caps can't be invoked off-path (#19) |
+| `pnpm demo:memory` | labeled memory — labels survive across sessions, closing the persistence leak (#16) |
+| `pnpm demo:clock` / `:attestation` / `:policy` | TCB-integrity: trusted clock+leases (#30), pinned-hash admission (#29), admin-cap-gated audited policy (#31) |
+| `pnpm demo:assistant` | capstone — a confined document assistant doing a real task on real files |
+| `pnpm demo:space` / `:store` / `:space:distributed` | a capability-scoped, labeled, leased coordination store (keyed + associative), distributed over CapTP (doc 07) |
+| `pnpm demo:isolation` / `:docker` | isolation-plane rungs — an untrusted tool in its own process / a hardened container |
+
+See the per-component honest scope in [`kernel/README.md`](kernel/README.md) and the fundamental limits
+in [`docs/06-irreducible-limits.md`](docs/06-irreducible-limits.md).
 
 See [docs/00-overview.md](docs/00-overview.md) for the full argument,
 [docs/06-irreducible-limits.md](docs/06-irreducible-limits.md) for what it honestly cannot do, and
