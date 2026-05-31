@@ -19,6 +19,7 @@ const demos = [
   'demo:attestation',
   'demo:policy',
   'demo:assistant',
+  'demo:space',
 ];
 
 describe('demos exit 0 (integration, under lockdown)', () => {
