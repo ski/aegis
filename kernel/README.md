@@ -107,24 +107,44 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 
 ## Honest scope (what this is NOT yet)
 
-Tracked against the design's known gaps:
+Accurate as of the current milestones. Honesty cuts both ways — when a caveat here gets shipped past,
+it is *removed*, not left to overclaim a gap that no longer exists. For limits that are *fundamental*
+(can't be patched, only scoped around) see [`docs/06-irreducible-limits.md`](../docs/06-irreducible-limits.md).
 
-- **No WASM/WASI isolation yet** — caps are in-process objects; the trust boundary is that the
-  untrusted oracle only emits *data*, never touches kernel objects. Phase 1b moves untrusted effects
-  into WASM components (issue #D1 / substrate phase 1).
-- **The default model is a deterministic mock** — milestone 4 builds the real model-as-oracle harness
-  (constrained decoding, inference logging, replay) and a real OpenAI-compatible adapter, but the
-  *default* demo uses a scripted mock so the property stays testable offline. Set `AEGIS_MODEL_URL` to
-  drive it with a real local CPU model.
-- **No powerbox / trusted path yet** (issues #7, #17) — endowment is static. The brokered grant flow
-  with an unspoofable UI is the next build milestone.
-- **The declassifier is structural and demo-specific** (a count-only reducer). It is sound *because*
-  it constructs its output from cardinality alone — it is not a general free-text declassifier, which
-  remains out of scope (issue #2).
-- ~~`harden` is shallow~~ — **done:** the kernel runs under SES `lockdown()`, so `harden()` is the
-  real transitive freeze and the membrane is enforced against a hardened realm (`pnpm demo:hardened`).
-  Still open: this hardens the *realm*, not the *TCB* — the minimized verifiable membrane core (#19)
-  is separate, harder work.
+**Implemented since the early caveats (no longer gaps):** WASM/WASI tools are capabilities with zero
+ambient authority (`demo:wasm`, #D1); the powerbox + trusted path are built (`demo:powerbox`, #7/#17);
+`harden` is the real SES transitive freeze under `lockdown()` (`demo:hardened`); model-as-oracle runs
+over real HTTP (`demo:model:http`); labeled memory, the labeled space, the unified store, CapTP
+distribution, the microkernel, the TCB-integrity trio, and a Docker isolation rung all exist.
+
+**Still genuinely open (engineering — buildable here):**
+- **The model is the swappable oracle, not the core caps.** WASM isolates *tools* (`demo:wasm`); the
+  *control-plane* caps are still in-process JS objects relying on SES + the microkernel boundary, not
+  per-cap WASM/VM isolation. Hardening each effect into its own sandbox is incremental.
+- **The default demos use a deterministic mock model** so the security property stays testable offline.
+  Real inference works (`demo:model:http`, or `AEGIS_MODEL_URL=…/v1/chat/completions pnpm demo:model`
+  against Ollama/llama.cpp) but is opt-in, not the default.
+- **Stores are in-memory.** The unified labeled store (`store.ts`) is not persisted; JavaSpaces-style
+  durability + label preservation across restarts is unbuilt.
+- **Template matching is primitive-equality only** (doc 07): object-valued fields won't match; no
+  structural/type matching, no `notify`, `take` is an O(n) scan.
+- **Distribution is in-process loopback.** CapTP + the distributed space run over a loopback channel,
+  not a real socket/worker transport (`demo:distribution`, `demo:space:distributed`).
+- **CI is parked** — the workflow exists but auto-triggers are disabled pending an account billing fix;
+  the tests are run manually, not gated on push.
+- **The M12 audit finding (#32)** — the vat collapses all cap-invocation errors into `blocked:'revoked'`,
+  so a scope/validation refusal is mislabeled in the audit trail. Cheap to fix.
+
+**Open by design / harder (research or host-dependent):**
+- **The declassifier is structural and demo-specific** (a count-only reducer, sound because it derives
+  from cardinality alone). A general free-text declassifier is an open problem, not a TODO (#2).
+- **SES hardens the realm, not the TCB.** The 4-method microkernel (`demo:microkernel`) shrinks the
+  trusted surface, but a *separately-verifiable* core / the seL4 floor (#19, phase 3) is unbuilt.
+- **Isolation tops out at Docker.** gVisor and the microVM rung (Firecracker/Kata) are documented but
+  not implemented; both need host capabilities (KVM) beyond this environment.
+- **Never run for real.** Every demo is a scenario authored to pass; the kernel has not been used as a
+  persistent daily-driver, so the ergonomic tensions (POLA-vs-usability #7, the human-attention budget
+  #24) remain theoretical.
 
 ## Milestones
 
