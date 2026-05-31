@@ -20,7 +20,8 @@
     "typecheck": "tsc --noEmit",
     "demo:clock": "tsx src/demo-clock.ts",
     "demo:attestation": "tsx src/demo-attestation.ts",
-    "demo:policy": "tsx src/demo-policy.ts"
+    "demo:policy": "tsx src/demo-policy.ts",
+    "demo:assistant": "tsx src/demo-assistant.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

@@ -28,6 +28,7 @@ pnpm demo:memory        # #16: labels survive memory — the across-session secr
 pnpm demo:clock         # #30: leases expire against one trusted clock the agent cannot forge
 pnpm demo:attestation   # #29: verify an artifact's pinned hash before admitting it; tampered builds refused
 pnpm demo:policy        # #31: only the operator's admin cap may change policy; every change is audited
+pnpm demo:assistant     # capstone: a confined document assistant doing a real task on real files
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
@@ -91,6 +92,7 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/attestation.ts` / `src/demo-attestation.ts` | #29: pin-and-verify artifact digests at admission |
 | `src/policy.ts` / `src/demo-policy.ts` | #31: admin-cap-gated, append-only-audited policy changes |
 | `src/demo-clock.ts` | #30: leased caps expire against the trusted clock |
+| `src/demo-assistant.ts` | capstone: a confined document assistant doing a real task on real files |
 
 ## Honest scope (what this is NOT yet)
 
@@ -168,3 +170,9 @@ Tracked against the design's known gaps:
     content digest matches a pinned hash; a single tampered byte is refused at admission (ADR 0002).
   - **#31 policy/upgrade gating** (`pnpm demo:policy`): policy changes require the operator-held,
     unforgeable admin capability and are all written to an append-only audit log.
+- [x] **Capstone — a real task on real files** (`pnpm demo:assistant`): a document assistant
+  summarizes meeting notes into `summary.md` (real filesystem I/O) with least authority — a read cap
+  scoped to `notes/`, a write sink cleared for no secrets, and *no* outbound cap. An injected note
+  tries to exfiltrate; reading outside scope is refused, there is no email cap to escalate through, and
+  writing confidential content to the public summary is blocked by the flow gate. The legitimate
+  summary lands on disk; no secret does. Surfaced two findings (see issues) — the value of wiring it real.
