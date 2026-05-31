@@ -95,6 +95,7 @@ See [docs/00-overview.md](docs/00-overview.md) for the full argument,
 | `docs/04-information-flow.md` | The ocap/IFC dual, label-the-turn, declassify/endorse, compartments |
 | `docs/05-least-authority-least-knowledge.md` | The unifying principle — the two minimizations, thermodynamics of secrets, designing information to decay |
 | `docs/06-irreducible-limits.md` | What the design honestly *cannot* solve — the fundamental limits it scopes around rather than fixes |
+| `docs/07-coordination-the-labeled-space.md` | A novel primitive — Linda/JavaSpaces coordination reconciled with ocap + IFC + leases |
 | `docs/glossary.md` | Quick reference for the vocabulary |
 | `docs/decisions/` | Dated decision records (ADR-style) |
 

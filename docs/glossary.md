@@ -100,3 +100,12 @@ Quick reference for the vocabulary used across the Aegis docs.
 - **Membrane microkernel** — the aspirational minimized, separately-verifiable core that all control-plane
   enforcement would build on, so the totally-trusted surface is small enough to audit. Answer to the control
   plane being a single point of total failure. (Issue #19.)
+
+- **Labeled space** — a capability-scoped, labeled, leased tuple space: Linda/JavaSpaces decoupled
+  coordination (write/read/take by template) reconciled with ocap (you hold an attenuated *facet*, not the
+  space), IFC (entry labels travel, so takers are re-tainted; facets can be clearance-scoped), and leases
+  (entries decay against the trusted clock). Decoupled coordination without ambient authority. See doc 07.
+
+- **Facet (of a space)** — an attenuated view of a labeled space: permits only some of read/write/take,
+  optionally confined to a sub-space template scope and/or a clearance. The capability you hold instead of
+  the space itself.

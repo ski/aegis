@@ -114,6 +114,16 @@ revocation works across the network. Two pieces matter:
   live cap dies with its connection). The **remote inference box is exactly a sturdyref**; the fleet
   vision is vats on many machines introducing each other to sturdyrefs.
 
+## Coordination beyond point-to-point: the labeled space
+
+CapTP is *introduction-based* — to talk to B you must hold a reference to B. For *decoupled* coordination
+(anonymous fan-out, work queues, shared blackboards) there is a complementary primitive: a
+**capability-scoped, labeled, leased tuple space** (Linda / JavaSpaces reconciled with the kernel's
+discipline). Producers and consumers coordinate by template match without naming each other, but you hold
+an attenuated *facet* rather than the space, entry labels travel so takers are re-tainted, and entries
+lease. A space shared across machines over CapTP is a distributed coordination fabric. See
+[07 — Coordination: the labeled space](07-coordination-the-labeled-space.md).
+
 ## Two payoffs
 
 - **Replay despite non-determinism.** Classic vats are deterministic (which gave KeyKOS/EROS
