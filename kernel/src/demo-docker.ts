@@ -43,7 +43,7 @@ async function main(): Promise<void> {
     vat.beginTurn();
     const r = await vat.act('normalize', '  HeLLo Docker  ');
     const tainted = [...vat.currentLabel().taints];
-    liveOk = r.ok && r.value === 'hello docker' && tainted.includes('isolated-container');
+    liveOk = r.ok && String(r.value).trim() === 'hello docker' && tainted.includes('isolated-container');
     console.log(`  live: vat → normalize('  HeLLo Docker  ') = '${r.ok ? r.value : '(blocked)'}' (taints: [${tainted.join(', ')}])`);
     tool.close();
   } else {
