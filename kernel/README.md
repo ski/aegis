@@ -30,6 +30,7 @@ pnpm demo:attestation   # #29: verify an artifact's pinned hash before admitting
 pnpm demo:policy        # #31: only the operator's admin cap may change policy; every change is audited
 pnpm demo:assistant     # capstone: a confined document assistant doing a real task on real files
 pnpm demo:space         # a capability-scoped, labeled, leased tuple space (JavaSpaces ∩ ocap ∩ IFC ∩ leases)
+pnpm demo:docker        # the Docker isolation rung — a tool in a hardened container (skips live if no Docker)
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
@@ -96,6 +97,8 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-assistant.ts` | capstone: a confined document assistant doing a real task on real files |
 | `src/space.ts` | a capability-scoped, labeled, leased tuple space (facets + template match + lease) |
 | `src/demo-space.ts` | decoupled coordination scoped by caps, labeled by IFC, decaying by lease |
+| `src/docker-tool.ts` | spawn a tool in a hardened container (no caps/network, read-only, bounded) as a cap |
+| `src/demo-docker.ts` | the Docker isolation rung; runs live where Docker exists, else verifies the argv |
 
 ## Honest scope (what this is NOT yet)
 
@@ -186,3 +189,9 @@ Tracked against the design's known gaps:
   taking a confidential entry re-taints the taker (and the flow gate then blocks its send); a reader
   cleared for nothing can't even see a confidential entry; and entries **lease** — decaying against the
   trusted clock. Decoupled coordination without ambient authority.
+- [x] **Docker isolation rung** (`pnpm demo:docker`): a stronger isolation rung than the bare child
+  process — the untrusted tool runs in a hardened container (`--cap-drop=ALL --network=none --read-only
+  --security-opt=no-new-privileges` + pid/memory limits), reached only over a typed cap. With **no
+  network**, the tool's *only* channel is the capability. Rung ladder: child process &lt; **Docker
+  (namespaces)** &lt; gVisor &lt; microVM (Firecracker/Kata). Runs live where Docker exists; verifies the
+  confinement argv and skips the live run otherwise (stays green in CI).

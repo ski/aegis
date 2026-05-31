@@ -22,7 +22,8 @@
     "demo:attestation": "tsx src/demo-attestation.ts",
     "demo:policy": "tsx src/demo-policy.ts",
     "demo:assistant": "tsx src/demo-assistant.ts",
-    "demo:space": "tsx src/demo-space.ts"
+    "demo:space": "tsx src/demo-space.ts",
+    "demo:docker": "tsx src/demo-docker.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
