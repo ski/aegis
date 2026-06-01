@@ -11,9 +11,9 @@
  *
  * Rung ladder: child process  <  Docker (namespaces, this)  <  gVisor  <  microVM (Firecracker/Kata).
  */
-import './bootstrap';
-import { dockerAvailable, dockerRunArgs, spawnDockerTool } from './docker-tool';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { dockerAvailable, dockerRunArgs, spawnDockerTool } from './docker-tool.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

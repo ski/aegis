@@ -10,9 +10,9 @@
  * clearance), entry labels travel (take/read/get return them so the taker re-absorbs), entries lease
  * against the trusted clock.
  */
-import { harden } from './harden';
-import type { Clearance, Label } from './label';
-import { flowCheck } from './label';
+import { harden } from './harden.ts';
+import type { Clearance, Label } from './label.ts';
+import { flowCheck } from './label.ts';
 
 export type Template = Readonly<Record<string, unknown>>;
 

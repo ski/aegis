@@ -14,9 +14,9 @@
  * which add a guest kernel) and ABOVE the plain child-process tool. Same capability shape at every rung.
  */
 import { spawn, spawnSync } from 'node:child_process';
-import type { Capability } from './capability';
-import { makeCapability } from './capability';
-import { label, source } from './label';
+import type { Capability } from './capability.ts';
+import { makeCapability } from './capability.ts';
+import { label, source } from './label.ts';
 
 export interface DockerToolOpts {
   readonly image: string;

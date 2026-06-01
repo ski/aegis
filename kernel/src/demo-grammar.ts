@@ -13,12 +13,12 @@
  * If no llama-server is reachable, the demo verifies the grammar shape offline and skips the live model
  * (so it stays green in CI).
  */
-import './bootstrap';
-import { GrammarModelOracle } from './grammar-oracle';
-import { buildToolGrammar } from './tool-grammar';
-import { buildToolset } from './tools';
-import type { ActResult } from './vat';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { GrammarModelOracle } from './grammar-oracle.ts';
+import { buildToolGrammar } from './tool-grammar.ts';
+import { buildToolset } from './tools.ts';
+import type { ActResult } from './vat.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

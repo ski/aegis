@@ -9,13 +9,13 @@
  * (retrying on garbage) and logs every inference. The point: the membrane's guarantees are unchanged —
  * safety does not depend on the model — and the logged run replays deterministically.
  */
-import './bootstrap'; // lockdown() first — real SES harden for the whole run
-import type { CompletionFn } from './model-oracle';
-import { ModelOracle, ReplayOracle, httpModel } from './model-oracle';
-import type { Oracle, Turn } from './oracle';
-import { INJECTED_SCRIPT, buildToolset } from './tools';
-import type { ActResult } from './vat';
-import { Vat } from './vat';
+import './bootstrap.ts'; // lockdown() first — real SES harden for the whole run
+import type { CompletionFn } from './model-oracle.ts';
+import { ModelOracle, ReplayOracle, httpModel } from './model-oracle.ts';
+import type { Oracle, Turn } from './oracle.ts';
+import { INJECTED_SCRIPT, buildToolset } from './tools.ts';
+import type { ActResult } from './vat.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

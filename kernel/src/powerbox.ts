@@ -12,8 +12,8 @@
  *                                  drawn by the trusted base, never the agent's framing. The agent
  *                                  holds no reference to the console and cannot forge approval.
  */
-import type { Capability } from './capability';
-import type { Label } from './label';
+import type { Capability } from './capability.ts';
+import type { Label } from './label.ts';
 
 export interface Grantable {
   readonly cap: Capability;

@@ -42,7 +42,15 @@ pnpm test               # vitest: unit tests + an integration test that runs eve
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
 #   AEGIS_MODEL_URL=http://localhost:11434/v1/chat/completions pnpm demo:model
+
+# aegisd — the REAL interactive agent (native Linux/WSL2, bare node, no tsx/build). See AEGISD.md:
+#   AEGIS_LLM_URL=http://127.0.0.1:8080/v1/chat/completions node --experimental-transform-types src/aegisd.ts
 ```
+
+> **Native Linux note:** relative imports use explicit `.ts` extensions, so the kernel runs with bare
+> `node --experimental-transform-types` (no tsx, no esbuild) — important on Linux/WSL2 where the
+> Windows-installed esbuild binary can't run. tsx and tsc still accept `.ts` imports, so the demos work
+> on both. This aligns with ADR 0001's Linux target.
 
 Each demo exits nonzero if any guarantee fails.
 

@@ -11,9 +11,9 @@
  * and skips the live boot (so it stays green in CI). Build the artifacts first (one-time, in WSL):
  *   bash kernel/microvm/build.sh
  */
-import './bootstrap';
-import { makeMicroVMTool, microvmAvailable } from './microvm-tool';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { makeMicroVMTool, microvmAvailable } from './microvm-tool.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

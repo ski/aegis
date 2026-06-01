@@ -16,11 +16,11 @@
  *   - **Leased (decay):** entries may carry a TTL and expire against the trusted clock (Jini leasing /
  *     issues #30 & #18) — coordination state decays by default.
  */
-import type { Capability, InvokeContext } from './capability';
-import { makeCapability } from './capability';
-import { harden } from './harden';
-import type { Clearance, Label } from './label';
-import { bottom, flowCheck, source } from './label';
+import type { Capability, InvokeContext } from './capability.ts';
+import { makeCapability } from './capability.ts';
+import { harden } from './harden.ts';
+import type { Clearance, Label } from './label.ts';
+import { bottom, flowCheck, source } from './label.ts';
 
 export type Template = Readonly<Record<string, unknown>>;
 

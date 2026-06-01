@@ -10,12 +10,12 @@
  *
  * In-process loopback channel — swap it for a socket and this is a multi-machine coordination fabric.
  */
-import './bootstrap';
+import './bootstrap.ts';
 import { makeCapTP } from '@endo/captp';
 import { E } from '@endo/eventual-send';
 import { Far } from '@endo/far';
-import { bottom, label } from './label';
-import { makeStore } from './store';
+import { bottom, label } from './label.ts';
+import { makeStore } from './store.ts';
 
 interface CapTPSide {
   dispatch(message: unknown): void;

@@ -7,7 +7,7 @@
  * single root): you can only mutate policy if you hold the unforgeable admin capability, and every
  * change is recorded in an append-only log.
  */
-import { harden } from './harden';
+import { harden } from './harden.ts';
 
 export interface PolicyChange {
   readonly key: string;

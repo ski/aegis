@@ -14,12 +14,12 @@
  *   5. cascading revocation as a kernel kill-switch — revoke a caretaker and the vat can no longer
  *      use the cap at all.
  */
-import './bootstrap'; // lockdown() first
+import './bootstrap.ts'; // lockdown() first
 import { Far } from '@endo/far';
-import { makeCapability } from './capability';
-import { bottom, source } from './label';
-import { makeCaretaker, makeMembrane } from './membrane';
-import { Vat } from './vat';
+import { makeCapability } from './capability.ts';
+import { bottom, source } from './label.ts';
+import { makeCaretaker, makeMembrane } from './membrane.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

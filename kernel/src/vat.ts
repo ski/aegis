@@ -9,11 +9,11 @@
  * not a proof the agent couldn't act, but a precise account of what it could do and why each
  * action was allowed or blocked.
  */
-import { harden } from './harden';
-import type { Capability } from './capability';
-import type { Label } from './label';
-import { bottom, flowCheck, fmtLabel, join } from './label';
-import type { Powerbox } from './powerbox';
+import { harden } from './harden.ts';
+import type { Capability } from './capability.ts';
+import type { Label } from './label.ts';
+import { bottom, flowCheck, fmtLabel, join } from './label.ts';
+import type { Powerbox } from './powerbox.ts';
 
 export type AuditEvent =
   | 'absorb'

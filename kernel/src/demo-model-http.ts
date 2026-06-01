@@ -12,14 +12,14 @@
  *   ollama run llama3.2:1b
  *   AEGIS_MODEL_URL=http://localhost:11434/v1/chat/completions pnpm demo:model
  */
-import './bootstrap';
+import './bootstrap.ts';
 import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { ModelOracle, httpModel } from './model-oracle';
-import type { Oracle } from './oracle';
-import { INJECTED_SCRIPT, buildToolset } from './tools';
-import type { ActResult } from './vat';
-import { Vat } from './vat';
+import { ModelOracle, httpModel } from './model-oracle.ts';
+import type { Oracle } from './oracle.ts';
+import { INJECTED_SCRIPT, buildToolset } from './tools.ts';
+import type { ActResult } from './vat.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

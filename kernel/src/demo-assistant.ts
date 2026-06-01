@@ -11,15 +11,15 @@
  *
  * This is the end-to-end test the demos couldn't be: a useful task, real side effects, real confinement.
  */
-import './bootstrap';
+import './bootstrap.ts';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, sep } from 'node:path';
-import { makeCapability } from './capability';
-import { bottom, label, sink, source } from './label';
-import type { Action } from './oracle';
-import type { ActResult } from './vat';
-import { Vat } from './vat';
+import { makeCapability } from './capability.ts';
+import { bottom, label, sink, source } from './label.ts';
+import type { Action } from './oracle.ts';
+import type { ActResult } from './vat.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

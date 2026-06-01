@@ -3,10 +3,10 @@
  * the global separation-of-duties invariant (issues #1, #22). A rejected topology never runs — the
  * unsafe arrangement is prevented by construction, not detected at runtime.
  */
-import type { Label } from './label';
-import { bottom } from './label';
-import type { SodResult, Topology, Violation } from './topology';
-import { checkSeparationOfDuties } from './topology';
+import type { Label } from './label.ts';
+import { bottom } from './label.ts';
+import type { SodResult, Topology, Violation } from './topology.ts';
+import { checkSeparationOfDuties } from './topology.ts';
 
 export class SeparationOfDutiesError extends Error {
   readonly violations: readonly Violation[];

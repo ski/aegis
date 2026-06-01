@@ -13,9 +13,9 @@
  * box with direct KVM).
  */
 import { spawnSync } from 'node:child_process';
-import type { Capability } from './capability';
-import { makeCapability } from './capability';
-import { label, source } from './label';
+import type { Capability } from './capability.ts';
+import { makeCapability } from './capability.ts';
+import { label, source } from './label.ts';
 
 const WSL_DISTRO = 'Ubuntu-24.04';
 const RUN_SH = '/mnt/c/Users/suhai/gitt/aegis/kernel/firecracker/run.sh';

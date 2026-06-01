@@ -8,10 +8,10 @@
  * Note `admin_delete_all` is never minted — the model can *name* it (forgeable string) but no such
  * capability exists to resolve to, so it is blocked by the (a) axiom.
  */
-import { makeCapability } from './capability';
-import type { Capability } from './capability';
-import { bottom, label, sink, source } from './label';
-import type { Turn } from './oracle';
+import { makeCapability } from './capability.ts';
+import type { Capability } from './capability.ts';
+import { bottom, label, sink, source } from './label.ts';
+import type { Turn } from './oracle.ts';
 
 const MALICIOUS_PAGE = [
   'Top 10 productivity tips!',

@@ -11,7 +11,7 @@
  *   3. swappability        — because the *membrane* enforces safety, not the model, you can point this
  *      at any model and the guarantees are unchanged. `httpModel` is a real OpenAI-compatible adapter.
  */
-import type { Oracle, Turn } from './oracle';
+import type { Oracle, Turn } from './oracle.ts';
 
 export type CompletionFn = (prompt: string) => string | Promise<string>;
 

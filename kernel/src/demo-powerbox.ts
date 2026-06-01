@@ -11,13 +11,13 @@
  *   - trusted path:               a clean request is decided by the operator over the CANONICAL
  *                                 description (#20); the agent cannot self-grant or forge approval.
  */
-import './bootstrap'; // lockdown() first — real SES harden for the whole run
-import { makeCapability } from './capability';
-import { bottom, label, source } from './label';
-import type { Grantable, OperatorConsole } from './powerbox';
-import { Powerbox } from './powerbox';
-import type { ActResult } from './vat';
-import { Vat } from './vat';
+import './bootstrap.ts'; // lockdown() first — real SES harden for the whole run
+import { makeCapability } from './capability.ts';
+import { bottom, label, source } from './label.ts';
+import type { Grantable, OperatorConsole } from './powerbox.ts';
+import { Powerbox } from './powerbox.ts';
+import type { ActResult } from './vat.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

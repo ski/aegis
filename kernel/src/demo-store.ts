@@ -8,9 +8,9 @@
  * that the associative facet can see — and both halves keep facet attenuation, label-travel, clearance
  * filtering, and leasing.
  */
-import './bootstrap';
-import { label, sink } from './label';
-import { makeStore } from './store';
+import './bootstrap.ts';
+import { label, sink } from './label.ts';
+import { makeStore } from './store.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

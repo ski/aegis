@@ -11,9 +11,9 @@
  * skips the live boot (stays green in CI). Build once: bash kernel/firecracker/build.sh (and place a
  * vmlinux at ~/fc/vmlinux — see kernel/firecracker/README.md).
  */
-import './bootstrap';
-import { firecrackerAvailable, makeFirecrackerTool } from './firecracker-tool';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { firecrackerAvailable, makeFirecrackerTool } from './firecracker-tool.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

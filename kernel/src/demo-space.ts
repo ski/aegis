@@ -13,11 +13,11 @@
  *      cleared reader can;
  *   D. leasing — an entry with a TTL decays against the trusted clock and is no longer takeable.
  */
-import './bootstrap';
-import { makeCapability } from './capability';
-import { bottom, label, sink, source } from './label';
-import { makeSpace, makeSpaceCaps } from './space';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { makeCapability } from './capability.ts';
+import { bottom, label, sink, source } from './label.ts';
+import { makeSpace, makeSpaceCaps } from './space.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

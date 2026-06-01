@@ -22,13 +22,16 @@
 export function buildToolGrammar(toolNames: readonly string[]): string {
   const toolAlt = toolNames.map((n) => `"\\"${n}\\""`).join(' | ');
   return [
-    'root        ::= "{" ws "\\"thought\\"" ws ":" ws string ws "," ws body ws "}"',
+    // `thought` is LENGTH-BOUNDED so a verbose small model can't ramble past the token budget and emit
+    // a truncated (unparseable) reply. arg/say use the unbounded `string`.
+    'root        ::= "{" ws "\\"thought\\"" ws ":" ws shortstring ws "," ws body ws "}"',
     'body        ::= action | say',
     'action      ::= "\\"action\\"" ws ":" ws "{" ws "\\"tool\\"" ws ":" ws tool ws "," ws "\\"arg\\"" ws ":" ws string ws "}"',
     'say         ::= "\\"say\\"" ws ":" ws string',
     `tool        ::= ${toolAlt}`,
     // a conservative JSON string (no control chars, basic escapes)
     'string      ::= "\\"" ([^"\\\\] | "\\\\" ["\\\\/bfnrt])* "\\""',
+    'shortstring ::= "\\"" ([^"\\\\] | "\\\\" ["\\\\/bfnrt]){0,240} "\\""',
     'ws          ::= [ \\t\\n]*',
   ].join('\n');
 }
@@ -41,5 +44,9 @@ export function buildGrammarSystemPrompt(toolNames: readonly string[]): string {
     `Your available tools are EXACTLY: ${toolNames.join(', ')}.`,
     'Shape: {"thought": "...", "action": {"tool": "<one of your tools>", "arg": "..."}}',
     'or:    {"thought": "...", "say": "..."}',
+    '',
+    'Make PROGRESS each step: never repeat an action whose result you have already seen.',
+    'When the task is done (or you cannot make progress), use the "finish" tool / a "say" message.',
+    'Pass arguments in the "arg" field (e.g. a filename to read, or the text to write).',
   ].join('\n');
 }

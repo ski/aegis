@@ -9,13 +9,13 @@
  * memory the secrecy survives the round-trip through memory, the recalling turn is re-tainted, and the
  * send is blocked exactly as it would be in-turn.
  */
-import './bootstrap';
-import { makeCapability } from './capability';
-import { bottom, label, sink, source } from './label';
-import { makeLabeledMemory, makeMemoryCaps } from './labeled-memory';
-import type { Capability } from './capability';
-import type { ActResult } from './vat';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { makeCapability } from './capability.ts';
+import { bottom, label, sink, source } from './label.ts';
+import { makeLabeledMemory, makeMemoryCaps } from './labeled-memory.ts';
+import type { Capability } from './capability.ts';
+import type { ActResult } from './vat.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

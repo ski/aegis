@@ -12,7 +12,7 @@
  * object violates the Proxy invariants, so we proxy a fresh extensible shadow and redirect the traps
  * to the real cap.
  */
-import type { Capability } from './capability';
+import type { Capability } from './capability.ts';
 
 export interface Membrane<T> {
   readonly proxy: T;

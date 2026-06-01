@@ -13,9 +13,9 @@
  * is a DEV-grade rung, not a production substrate — the real target is a Linux box (ADR 0001).
  */
 import { spawnSync } from 'node:child_process';
-import type { Capability } from './capability';
-import { makeCapability } from './capability';
-import { label, source } from './label';
+import type { Capability } from './capability.ts';
+import { makeCapability } from './capability.ts';
+import { label, source } from './label.ts';
 
 const WSL_DISTRO = 'Ubuntu-24.04';
 const RUN_SH = '/mnt/c/Users/suhai/gitt/aegis/kernel/microvm/run.sh';

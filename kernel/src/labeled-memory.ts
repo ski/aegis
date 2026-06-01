@@ -15,10 +15,10 @@
  *
  * Memory is reached through a capability, so cross-vat recall is mediated, not ambient.
  */
-import type { Capability, InvokeContext } from './capability';
-import { makeCapability } from './capability';
-import type { Label } from './label';
-import { bottom, source } from './label';
+import type { Capability, InvokeContext } from './capability.ts';
+import { makeCapability } from './capability.ts';
+import type { Label } from './label.ts';
+import { bottom, source } from './label.ts';
 
 export interface MemoryEntry {
   readonly value: unknown;

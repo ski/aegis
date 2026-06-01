@@ -12,9 +12,9 @@
  *
  * Runs live where runsc exists (here, in WSL2); skips the live run otherwise (stays green in CI).
  */
-import './bootstrap';
-import { gvisorArgs, gvisorAvailable, makeGvisorTool } from './gvisor-tool';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { gvisorArgs, gvisorAvailable, makeGvisorTool } from './gvisor-tool.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

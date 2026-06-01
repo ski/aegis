@@ -89,6 +89,7 @@ passes (33 findings tracked as issues), and demonstrated by 19 runnable demos + 
 | `pnpm demo:space` / `:store` / `:space:distributed` | a capability-scoped, labeled, leased coordination store (keyed + associative), distributed over CapTP (doc 07) |
 | `pnpm demo:isolation` / `:docker` / `:gvisor` / `:microvm` | mechanism isolation rungs — process / hardened container / gVisor userspace-kernel / hardware-virtualized KVM guest |
 | `pnpm demo:sel4` | the **verified** isolation rung — a confined protection domain on the formally-verified seL4 microkernel |
+| **`aegisd`** | the design made **real** — a persistent interactive agent on real files, driven by a real local model, every action through the membrane ([kernel/AEGISD.md](kernel/AEGISD.md)) |
 
 See the per-component honest scope in [`kernel/README.md`](kernel/README.md) and the fundamental limits
 in [`docs/06-irreducible-limits.md`](docs/06-irreducible-limits.md).

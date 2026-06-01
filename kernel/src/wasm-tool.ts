@@ -8,10 +8,10 @@
  * into the same membrane as everything else.
  */
 import wabtInit from 'wabt';
-import type { Capability } from './capability';
-import { makeCapability } from './capability';
-import type { Clearance } from './label';
-import { bottom, source } from './label';
+import type { Capability } from './capability.ts';
+import { makeCapability } from './capability.ts';
+import type { Clearance } from './label.ts';
+import { bottom, source } from './label.ts';
 
 let wabtPromise: ReturnType<typeof wabtInit> | null = null;
 const getWabt = (): ReturnType<typeof wabtInit> => (wabtPromise ??= wabtInit());

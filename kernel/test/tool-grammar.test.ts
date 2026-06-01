@@ -18,6 +18,12 @@ describe('tool-call GBNF grammar', () => {
     expect(grammar).not.toContain('admin_delete_all');
   });
 
+  it('length-bounds the thought field so a verbose model cannot overrun the token budget', () => {
+    expect(grammar).toContain('shortstring');
+    expect(grammar).toMatch(/\{0,\d+\}/); // a bounded repetition
+    expect(grammar).toContain('"\\"thought\\"" ws ":" ws shortstring');
+  });
+
   it('uses a well-formed JSON string rule (correct backslash escaping)', () => {
     // the char-class must be [^"\\] (escaped backslash), not [^"\]
     expect(grammar).toContain('string      ::= "\\"" ([^"\\\\]');

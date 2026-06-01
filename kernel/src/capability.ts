@@ -6,9 +6,9 @@
  * strings) which the vat resolves to held caps. So "possession is authority" is enforced by the
  * trust boundary: the model produces data, the trusted vat holds the references.
  */
-import { harden } from './harden';
-import type { Clearance, Label } from './label';
-import { source } from './label';
+import { harden } from './harden.ts';
+import type { Clearance, Label } from './label.ts';
+import { source } from './label.ts';
 
 export interface InvokeResult {
   /** The value produced by the effect (for a read: the data; for a send: an ack). */

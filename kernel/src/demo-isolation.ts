@@ -11,9 +11,9 @@
  * A microVM (Firecracker / Cloud-Hypervisor) is the hardware-isolated version of exactly this shape;
  * swap the process boundary for a VM boundary and nothing above it changes.
  */
-import './bootstrap';
-import { spawnToolWorker } from './process-tool';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { spawnToolWorker } from './process-tool.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

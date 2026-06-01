@@ -14,10 +14,10 @@
  * This is not the verified seL4 floor (that is phase 3). It is the JS-level move that makes the totally
  * trusted code small enough to audit.
  */
-import type { InvokeContext, InvokeResult } from './capability';
-import { harden } from './harden';
-import type { Clearance } from './label';
-import { flowCheck } from './label';
+import type { InvokeContext, InvokeResult } from './capability.ts';
+import { harden } from './harden.ts';
+import type { Clearance } from './label.ts';
+import { flowCheck } from './label.ts';
 
 export interface CapHandle {
   readonly id: string;

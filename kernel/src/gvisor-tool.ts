@@ -14,9 +14,9 @@
  * provenance. On this machine runsc lives in WSL2, so the adapter shells out through `wsl.exe`.
  */
 import { spawnSync } from 'node:child_process';
-import type { Capability } from './capability';
-import { makeCapability } from './capability';
-import { label, source } from './label';
+import type { Capability } from './capability.ts';
+import { makeCapability } from './capability.ts';
+import { label, source } from './label.ts';
 
 const WSL_DISTRO = 'Ubuntu-24.04';
 

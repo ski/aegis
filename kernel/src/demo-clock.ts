@@ -8,9 +8,9 @@
  * effects never read it, and an agent never supplies a timestamp — so expiry cannot be forged. Here we
  * inject a controllable clock to drive expiry deterministically and show the agent cannot influence it.
  */
-import './bootstrap';
-import { bottom, source } from './label';
-import { makeKernel } from './microkernel';
+import './bootstrap.ts';
+import { bottom, source } from './label.ts';
+import { makeKernel } from './microkernel.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

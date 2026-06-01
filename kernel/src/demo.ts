@@ -16,11 +16,11 @@
  *
  * Exit code is nonzero if any expected guarantee fails to hold.
  */
-import './bootstrap'; // lockdown() first — real SES harden for the whole run
-import { ScriptedOracle } from './oracle';
-import type { ActResult } from './vat';
-import { Vat } from './vat';
-import { INJECTED_SCRIPT, buildToolset } from './tools';
+import './bootstrap.ts'; // lockdown() first — real SES harden for the whole run
+import { ScriptedOracle } from './oracle.ts';
+import type { ActResult } from './vat.ts';
+import { Vat } from './vat.ts';
+import { INJECTED_SCRIPT, buildToolset } from './tools.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

@@ -11,11 +11,11 @@
  *   - a tool with one import has exactly one capability — and cannot even instantiate without it;
  *   - "a tool is a capability" holds at the boundary: the sandboxed export plugs into the vat.
  */
-import './bootstrap'; // lockdown() first — real SES harden for the whole run
-import { makeCapability } from './capability';
-import { bottom, sink } from './label';
-import { Vat } from './vat';
-import { EMIT_DOUBLE_WAT, SQUARE_WAT, compileWat, importsOf, wrapWasmExport } from './wasm-tool';
+import './bootstrap.ts'; // lockdown() first — real SES harden for the whole run
+import { makeCapability } from './capability.ts';
+import { bottom, sink } from './label.ts';
+import { Vat } from './vat.ts';
+import { EMIT_DOUBLE_WAT, SQUARE_WAT, compileWat, importsOf, wrapWasmExport } from './wasm-tool.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

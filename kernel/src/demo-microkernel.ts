@@ -8,9 +8,9 @@
  * effect — the only door to authority is the kernel — and the dual gate + cascading revocation live in
  * that small, auditable core.
  */
-import './bootstrap';
-import { bottom, label, sink, source } from './label';
-import { makeKernel } from './microkernel';
+import './bootstrap.ts';
+import { bottom, label, sink, source } from './label.ts';
+import { makeKernel } from './microkernel.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

@@ -14,7 +14,7 @@
  * (The channel here is in-process loopback; swap it for a socket/worker and nothing else changes —
  * that is the point of CapTP.)
  */
-import './bootstrap';
+import './bootstrap.ts';
 import { makeCapTP } from '@endo/captp';
 import { E } from '@endo/eventual-send';
 import { Far } from '@endo/far';

@@ -8,9 +8,9 @@
  */
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import type { Capability } from './capability';
-import { makeCapability } from './capability';
-import { label, source } from './label';
+import type { Capability } from './capability.ts';
+import { makeCapability } from './capability.ts';
+import { label, source } from './label.ts';
 
 export interface IsolatedTool {
   readonly cap: Capability;

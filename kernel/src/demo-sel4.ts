@@ -11,9 +11,9 @@
  * Runs live where the seL4 substrate exists (Microkit SDK + aarch64 gcc + qemu-aarch64, here in WSL2);
  * otherwise skips the live build/boot (so it stays green in CI). Build the SDK once (see kernel/sel4/).
  */
-import './bootstrap';
-import { makeSel4Tool, sel4Available } from './sel4-tool';
-import { Vat } from './vat';
+import './bootstrap.ts';
+import { makeSel4Tool, sel4Available } from './sel4-tool.ts';
+import { Vat } from './vat.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

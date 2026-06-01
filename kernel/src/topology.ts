@@ -11,7 +11,7 @@
  * The trusted base checks this *statically, at wiring time* — prevention by construction, before any
  * agent runs. This is the "control the context, don't gate the output" discipline made structural.
  */
-import { harden } from './harden';
+import { harden } from './harden.ts';
 
 export interface SourceSpec {
   readonly name: string;

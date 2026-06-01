@@ -8,8 +8,8 @@
  * never by an agent — and every change is appended to a tamper-evident log. An injected agent that tries
  * to widen a clearance is refused; the operator's change is applied and recorded.
  */
-import './bootstrap';
-import { makePolicyRoot } from './policy';
+import './bootstrap.ts';
+import { makePolicyRoot } from './policy.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

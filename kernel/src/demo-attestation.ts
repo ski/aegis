@@ -8,10 +8,10 @@
  * attestation and is refused — runtime confinement can't help once the confiner/tool is compromised, so
  * we catch it at admission. This is ADR 0002's tool-admission ritual made concrete.
  */
-import './bootstrap';
+import './bootstrap.ts';
 import wabtInit from 'wabt';
-import { admitArtifact, attest, digest } from './attestation';
-import { SQUARE_WAT, wrapWasmExport } from './wasm-tool';
+import { admitArtifact, attest, digest } from './attestation.ts';
+import { SQUARE_WAT, wrapWasmExport } from './wasm-tool.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));
