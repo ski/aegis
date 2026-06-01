@@ -73,8 +73,11 @@ share semantics, distributed-revocation timing, spam/sybil — named, not solved
 
 - **Live with aegisd** — use it over a real session; see whether a stronger model plans well enough and
   whether powerbox/attention-budget fatigue (#7/#24) actually bites. The unanswered question.
-- **A stronger model** behind aegisd — Gemma 4 E4B (4.5B) is a weak planner; try a 14B (Phi-class) or a
-  remote frontier cap, and measure planning vs. the unchanged security guarantees.
+- [x] **A stronger model** — DONE: a remote frontier model (Gemini 3.5 Flash via the Cloudflare AI
+  Gateway) drives the kernel (`demo:gateway`, `gateway-oracle.ts`). Live-verified: the membrane confines
+  a frontier model exactly as it confines a 4B — escalation/exfil blocked, nothing leaked, *safety is
+  model-independent*. Bonus finding: the stronger model spotted the injection on its own (irrelevant to
+  the guarantee). Creds read from env ONLY — aegis is public. *(2026-06-01)*
 - [x] **A real Zoe contract** — DONE: a constant-product AMM (x·y=k) as an untrusted contract
   (`demo:amm`); offer safety + conservation hold with real pricing math (doc 10). *(2026-06-01)*
 
