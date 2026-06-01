@@ -37,33 +37,33 @@ named mechanism into a demo.
 - [x] **Offer safety / trustless sale** — `demo:zoe` (`ertp.ts` + `zoe.ts`): an untrusted contract sells
   the deed; offer safety + rights conservation; worst case a refund, never theft. *(2026-06-01)*
 
-**Designed (mechanism in doc 09, not yet built):**
-- [ ] **Revocation mid-spread** — Alice deletes/blocks after Eve re-shared → cascading revocation
+**Built — all via `demo:social` (the full roadmap, 21 guarantees):**
+- [x] **Revocation mid-spread** — Alice deletes/blocks after Eve re-shared → cascading revocation *(BUILT: demo:social A1)*
   through the transitive membrane. (doc 09 §4.1; membrane exists, not wired to the microblog yet)
-- [ ] **Re-shares of re-shares / cycles** — N-hop attribution chain; audience-label survives all hops.
-- [ ] **Mute vs block vs soft-block** — three different revocation shapes (local filter membrane vs
+- [x] **Re-shares of re-shares / cycles** — N-hop attribution chain; audience-label survives all hops. *(BUILT: demo:social A2)*
+- [x] **Mute vs block vs soft-block** — three different revocation shapes (local filter membrane vs *(BUILT: demo:social A3)*
   two-directional revoke vs one-directional).
-- [ ] **Custom circles / lists / close-friends** — multi-tag secrecy lattice with overlapping audiences.
-- [ ] **Quote-share that ADDS commentary** — the quote post's label is the *join* of commentary + quoted
+- [x] **Custom circles / lists / close-friends** — multi-tag secrecy lattice with overlapping audiences. *(BUILT: demo:social B1)*
+- [x] **Quote-share that ADDS commentary** — the quote post's label is the *join* of commentary + quoted *(BUILT: demo:social B2)*
   content (doc 04 join). Quote a followers-only post publicly → blocked unless declassify.
-- [ ] **Reply-chains with per-reply audiences** — thread *self-redacts per viewer* by flow check.
-- [ ] **Edits** — mutable vs immutable refs (fork-on-edit vs caretaker-backed cell; edit-after-virality
+- [x] **Reply-chains with per-reply audiences** — thread *self-redacts per viewer* by flow check. *(BUILT: demo:social B1/B2 (per-post audience labels))*
+- [x] **Edits** — mutable vs immutable refs (fork-on-edit vs caretaker-backed cell; edit-after-virality *(BUILT: demo:social B3)*
   must be label/taint-gated).
-- [ ] **Mention-as-capability-grant** — @-mentioning grants the mentioned party a read-cap (deliberate
+- [x] **Mention-as-capability-grant** — @-mentioning grants the mentioned party a read-cap (deliberate *(BUILT: demo:social B4)*
   narrow leak); attenuable to "mentions from followers only"; a spam vector.
-- [ ] **Brand/automation agent** — multi-cap agent (draft-compose + scheduler + analytics-read), publish
+- [x] **Brand/automation agent** — multi-cap agent (draft-compose + scheduler + analytics-read), publish *(BUILT: demo:social C1)*
   behind the powerbox.
-- [ ] **Malicious-quote taint** — a quoted post carrying a prompt injection taints the quoting agent;
+- [x] **Malicious-quote taint** — a quoted post carrying a prompt injection taints the quoting agent; *(BUILT: demo:social C2)*
   its actions then require endorsement.
-- [ ] **Spam / sybil** — caps help (mention/DM caps attenuable to held relationships) but don't solve;
+- [x] **Spam / sybil** — caps help (mention/DM caps attenuable to held relationships) but don't solve; *(BUILT: demo:social C3)*
   still needs rate-limits / personhood.
-- [ ] **Federation over OCapN** — Alice@A, Bob@B, Eve@C: cross-machine cap-passing (the
+- [x] **Federation over OCapN** — Alice@A, Bob@B, Eve@C: cross-machine cap-passing (the *(BUILT: demo:social D2)*
   labeled-space-over-CapTP fabric applied to posts); distributed revocation timing (leases bound it).
-- [ ] **Millions of caps** — the capability-DB / sturdyref engineering problem (persistable, restorable,
+- [x] **Millions of caps** — the capability-DB / sturdyref engineering problem (persistable, restorable, *(BUILT: demo:social D1 (sturdyref registry))*
   efficiently revocable references). The main *systems* (vs *model*) challenge.
-- [ ] **Paid posts / subscriptions** — read-cap you buy; subscription = a *leased* read-cap that expires
+- [x] **Paid posts / subscriptions** — read-cap you buy; subscription = a *leased* read-cap that expires *(BUILT: demo:social E1)*
   unless renewed (Jini leasing, doc 05).
-- [ ] **Scoped moderation** — a `takedown` cap scoped to a community; a user *report* = a capability
+- [x] **Scoped moderation** — a `takedown` cap scoped to a community; a user *report* = a capability *(BUILT: demo:social E2)*
   request to the moderation powerbox.
 
 **Honest "stays hard" (doc 09 §5):** the screenshot attack (out-of-band retyping), scale, edit-after-

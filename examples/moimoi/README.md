@@ -30,8 +30,28 @@ From this directory (shares the workspace toolchain — no separate install):
 pnpm demo:microblog   # Alice → Bob → Eve: sharing=delegation, visibility=IFC
 pnpm demo:ownership   # Alice SELLS post EF342's deed to Eve (money + exclusive transfer)
 pnpm demo:zoe         # an UNTRUSTED contract sells the deed; worst case a refund, never theft
-pnpm test             # the ownership/money unit tests
+pnpm demo:social      # the FULL complication roadmap (doc 09 §4) — 21 guarantees across 14 hard cases
+pnpm test             # all moimoi unit + integration tests
 ```
+
+### `demo:social` — every hard case decomposed (`social.ts`)
+
+The complications that make a real microblog hard, each mapped to a kernel primitive and asserted live:
+
+- **A — propagation graph:** revocation mid-spread cascades (boost = a cap-derivation tree, `reachable`
+  checks the whole ancestor chain); attribution + audience-label survive N hops; mute / block /
+  soft-block are three distinct revocation shapes.
+- **B — audience & IFC:** custom circles = a multi-tag secrecy lattice (visible only to a reader cleared
+  for *all* the post's circles); quote-with-commentary = the label *join* (a public quote of a private
+  post can't go public); edits = immutable-fork vs mutable-cell; mention = a deliberate narrow read-cap.
+- **C — agents & adversaries:** a brand agent without a publish cap can't publish (powerbox gate); a
+  malicious quoted post taints the quoting agent (publish needs endorsement); relationship-gated reach
+  blocks a no-relationship sybil.
+- **D — scale & federation:** a sturdyref registry (persistable, restorable, revocable caps — the
+  millions-of-caps shape); a boost chain spanning servers, origin-takedown cascading across the
+  federation (distributed revocation, the OCapN shape).
+- **E — money & moderation:** subscriptions = leased read-caps that expire; a moderator `takedown` cap
+  scoped to one community.
 
 ## What's here vs. what stayed in the kernel
 

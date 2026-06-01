@@ -82,8 +82,9 @@ information-flow must both say yes.
 
 ## 4. Complication roadmap — every way it gets hard, mapped to the model
 
-Each item below is a *known-hard* real-microblog problem, decomposed. **Built** = in the demo today;
-everything else is designed-but-unbuilt, with the mechanism named.
+Each item below is a *known-hard* real-microblog problem, decomposed. **All of §4.1–§4.6 are now built**
+and asserted live in `examples/moimoi/demo-social.ts` (`pnpm demo:social` — 21 guarantees), alongside
+`demo:microblog` / `demo:ownership` / `demo:zoe`. The prose names the mechanism behind each.
 
 ### 4.1 Graph & propagation
 
