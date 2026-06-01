@@ -1,7 +1,7 @@
 # 09 — Worked example: a microblog as capabilities + IFC
 
 > The first full application of the whole stack to something real. Implemented (the core) in
-> `kernel/src/microblog.ts` (`pnpm demo:microblog`); the rest is a decomposition roadmap.
+> `examples/moimoi/microblog.ts` (`pnpm demo:microblog`); the rest is a decomposition roadmap.
 
 A microblog (Twitter / Mastodon / Bluesky shape) is *secretly already* a capability/IFC system wearing
 ACL clothes. Making that honest is exactly what lets humans **and agents** use it safely. This doc
@@ -160,7 +160,7 @@ everything else is designed-but-unbuilt, with the mechanism named.
 ### 4.6 Money & moderation
 
 - **Money & ownership transfer — BUILT** (`pnpm demo:ownership`; `kernel/src/mint.ts`,
-  `kernel/src/ownership.ts`). This is the deepest part, and it formalizes **ownership**:
+  `examples/moimoi/ownership.ts`). This is the deepest part, and it formalizes **ownership**:
   - **Money is a mint & purse** (Miller/E): value lives in the mint's closure-private ledger keyed by
     purse identity, *not* in the reference — so you can't forge money by copying a purse, and payment
     conserves total value.

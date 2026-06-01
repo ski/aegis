@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { makeMint } from '../src/mint.ts';
-import { makeDeedRegistry } from '../src/ownership.ts';
+import { makeMint } from '../../../kernel/src/mint.ts';
+import { makeDeedRegistry } from '../ownership.ts';
 
 describe('money — mint & purse', () => {
   it('conserves value across a payment; cannot overdraw', () => {

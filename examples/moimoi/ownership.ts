@@ -16,8 +16,8 @@
  * buyer holds the only live deed. Works identically whether the buyer is a human or an agent — the deed
  * doesn't know what kind of principal owns it.
  */
-import { harden } from './harden.ts';
-import { makeMembrane } from './membrane.ts';
+import { harden } from '../../kernel/src/harden.ts';
+import { makeMembrane } from '../../kernel/src/membrane.ts';
 import type { PostRef } from './microblog.ts';
 import { authorRef } from './microblog.ts';
 import type { Post } from './microblog.ts';

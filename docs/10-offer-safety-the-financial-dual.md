@@ -58,7 +58,7 @@ no matter what the contract does.*
 
 ## Why this is the right capstone for the money thread
 
-The earlier [`demo:ownership`](../kernel/src/demo-ownership.ts) sale used a **trusted** escrow agent —
+The earlier [`demo:ownership`](../examples/moimoi/demo-ownership.ts) sale used a **trusted** escrow agent —
 both parties had to trust it not to cheat. Zoe removes that trust: the *framework* is trusted (small,
 auditable, like the membrane), the *contract* is not (arbitrary, like the model). This is the same
 progression Aegis makes everywhere — *don't trust the powerful flexible component; confine it behind a

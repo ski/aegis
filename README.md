@@ -118,6 +118,8 @@ See [docs/00-overview.md](docs/00-overview.md) for the full argument,
 | `docs/10-offer-safety-the-financial-dual.md` | Agoric's ERTP+Zoe = the Aegis thesis in finance: an untrusted contract, a trusted framework; worst case is a refund, never theft |
 | `docs/glossary.md` | Quick reference for the vocabulary |
 | `docs/decisions/` | Dated decision records (ADR-style) |
+| `kernel/` | the running control-plane kernel + all primitive demos and tests |
+| `examples/moimoi/` | a microblog as a *worked exposition* of Aegis (sharing/ownership/offer-safety) — a lens, not a product |
 
 ## Lineage we're standing on
 

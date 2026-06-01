@@ -1,0 +1,20 @@
+{
+  "name": "@aegis/moimoi",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "moimoi — a microblog as a worked exposition of Aegis (capabilities + IFC). NOT a product; a lens.",
+  "scripts": {
+    "demo:microblog": "tsx demo-microblog.ts",
+    "demo:ownership": "tsx demo-ownership.ts",
+    "demo:zoe": "tsx demo-zoe.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.7"
+  }
+}

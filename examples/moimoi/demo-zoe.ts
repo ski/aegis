@@ -14,9 +14,9 @@
  * Worst case of a malicious contract = a refund, never theft — exactly as the worst case of a
  * prompt-injected model is misuse of least authority, never escalation. Same move, AI ⟷ DeFi.
  */
-import './bootstrap.ts';
-import { AmountMath, makeIssuerKit, type Amount, type Payment } from './ertp.ts';
-import { makeZoe, type Contract, type Seat } from './zoe.ts';
+import '../../kernel/src/bootstrap.ts';
+import { AmountMath, makeIssuerKit, type Amount, type Payment } from '../../kernel/src/ertp.ts';
+import { makeZoe, type Contract, type Seat } from '../../kernel/src/zoe.ts';
 
 function bar(): void {
   console.log('─'.repeat(86));

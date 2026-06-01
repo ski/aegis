@@ -15,9 +15,9 @@
  *
  * This module is deliberately small and composable (more complexity to come).
  */
-import { harden } from './harden.ts';
-import { flowCheck, label, sink, type Label } from './label.ts';
-import { declassify, type Privilege } from './privilege.ts';
+import { harden } from '../../kernel/src/harden.ts';
+import { flowCheck, label, sink, type Label } from '../../kernel/src/label.ts';
+import { declassify, type Privilege } from '../../kernel/src/privilege.ts';
 
 export type Audience = 'public' | 'followers-only' | string;
 

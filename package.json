@@ -1,0 +1,10 @@
+{
+  "name": "@aegis/root",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Aegis — an OS where AI and object-capabilities are the same idea. Workspace root.",
+  "scripts": {
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

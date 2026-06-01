@@ -11,8 +11,8 @@
  *     placer holds Alice's declassify(followers-only) privilege.
  *   - An injected agent holding only a read-cap can't share at all.
  */
-import './bootstrap.ts';
-import { makePrivilege } from './privilege.ts';
+import '../../kernel/src/bootstrap.ts';
+import { makePrivilege } from '../../kernel/src/privilege.ts';
 import {
   attenuate,
   authorRef,

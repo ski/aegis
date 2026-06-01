@@ -14,8 +14,8 @@
  *      mint a fresh deed for the buyer. Afterwards Alice's deed is INERT; Eve mints the share-caps.
  *   4. The buyer can be a human or an agent — mechanically identical.
  */
-import './bootstrap.ts';
-import { makeMint } from './mint.ts';
+import '../../kernel/src/bootstrap.ts';
+import { makeMint } from '../../kernel/src/mint.ts';
 import { makeDeedRegistry, type Deed } from './ownership.ts';
 
 function bar(): void {
