@@ -31,6 +31,7 @@ pnpm demo:policy        # #31: only the operator's admin cap may change policy; 
 pnpm demo:assistant     # capstone: a confined document assistant doing a real task on real files
 pnpm demo:space         # a capability-scoped, labeled, leased tuple space (JavaSpaces ∩ ocap ∩ IFC ∩ leases)
 pnpm demo:docker        # the Docker isolation rung — a tool in a hardened container (skips live if no Docker)
+pnpm demo:microvm       # the microVM rung — a tool in a hardware-virtualized guest via KVM (skips live if no KVM)
 pnpm demo:store         # unify labeled memory (keyed) and the labeled space (associative) — one store, two faces
 pnpm demo:space:distributed  # the labeled space distributed over CapTP — coordination across machines
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
@@ -101,6 +102,9 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-space.ts` | decoupled coordination scoped by caps, labeled by IFC, decaying by lease |
 | `src/docker-tool.ts` | spawn a tool in a hardened container (no caps/network, read-only, bounded) as a cap |
 | `src/demo-docker.ts` | the Docker isolation rung; runs live where Docker exists, else verifies the argv |
+| `src/microvm-tool.ts` | boot a hardware-virtualized guest (KVM) per call, wrapped as a cap |
+| `src/demo-microvm.ts` | the microVM rung; runs live where WSL2+KVM+QEMU exist, else skips the live boot |
+| `microvm/` | guest init (static C), zero-download build, run script, and rung README |
 | `src/store.ts` | unified labeled+leased store: keyed (`kv`) + associative (`space`) faces over one core |
 | `src/demo-store.ts` | one store, two faces — labeled memory and the labeled space unified |
 | `src/demo-space-distributed.ts` | the labeled space over CapTP — coordination across a wire |
@@ -140,8 +144,9 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
   from cardinality alone). A general free-text declassifier is an open problem, not a TODO (#2).
 - **SES hardens the realm, not the TCB.** The 4-method microkernel (`demo:microkernel`) shrinks the
   trusted surface, but a *separately-verifiable* core / the seL4 floor (#19, phase 3) is unbuilt.
-- **Isolation tops out at Docker.** gVisor and the microVM rung (Firecracker/Kata) are documented but
-  not implemented; both need host capabilities (KVM) beyond this environment.
+- **Isolation reaches the microVM rung** (`demo:microvm`, hardware-virtualized guest via KVM) — but it
+  runs inside WSL2-on-Windows, a long trust chain (dev-grade, not production). gVisor is still unbuilt,
+  and a production KVM/Firecracker substrate on a real Linux box (and the seL4 floor) remains future work.
 - **Never run for real.** Every demo is a scenario authored to pass; the kernel has not been used as a
   persistent daily-driver, so the ergonomic tensions (POLA-vs-usability #7, the human-attention budget
   #24) remain theoretical.
@@ -220,6 +225,13 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
   network**, the tool's *only* channel is the capability. Rung ladder: child process &lt; **Docker
   (namespaces)** &lt; gVisor &lt; microVM (Firecracker/Kata). Runs live where Docker exists; verifies the
   confinement argv and skips the live run otherwise (stays green in CI).
+- [x] **MicroVM isolation rung** (`pnpm demo:microvm`): the strongest rung — the untrusted tool runs in a
+  **hardware-virtualized guest with its own kernel** (isolated by KVM), no network/disk/shared-fs, the
+  serial console its only channel, wrapped as a capability. Built with zero downloads (static-C init +
+  python-packed initramfs + the reused WSL2 kernel; see [`microvm/`](microvm/)). Completes the ladder:
+  process &lt; container &lt; **microVM**. Runs live where WSL2+KVM+QEMU exist; skips the live boot
+  otherwise. *Dev-grade here* — the VM runs inside WSL2-on-Windows (long trust chain), not a production
+  substrate (ADR 0001).
 - [x] **Unified labeled store** (`pnpm demo:store`): labeled memory (keyed) and the labeled space
   (associative) are one capability-secure, labeled, leased store with two faces — a keyed `kv` put is the
   same entry the associative `space` face sees (keyed = template on the `__key` field). Facet attenuation,

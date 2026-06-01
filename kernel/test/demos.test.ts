@@ -21,6 +21,7 @@ const demos = [
   'demo:assistant',
   'demo:space',
   'demo:docker',
+  'demo:microvm',
   'demo:store',
   'demo:space:distributed',
 ];

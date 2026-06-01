@@ -17,3 +17,8 @@ build/
 
 # Logs
 *.log
+
+# microVM build artifacts (rebuild with kernel/microvm/build.sh inside WSL)
+kernel/microvm/init
+kernel/microvm/initramfs.cpio.gz
+kernel/microvm/guest-kernel

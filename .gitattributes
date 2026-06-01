@@ -1,0 +1,4 @@
+# Shell scripts must keep LF or they break in WSL/Linux
+*.sh text eol=lf
+kernel/microvm/build.sh text eol=lf
+kernel/microvm/run.sh text eol=lf
