@@ -4,19 +4,13 @@ Durable scratchpad for things we've explicitly deferred. Newest intent at top.
 
 ## Parked (come back to these)
 
-- **Labels — exercise the full two-axis system.** (Founder: "remember the labels, I'll come to it later.")
-  Today aegisd only uses a single `secrecy` tag (`confidential`). The label system
-  (`kernel/src/label.ts`) is richer and underused:
-  - `secrecy` (confidentiality) — arbitrary tags: `customer-db`, `medical`, `salaries`, `project-x`…
-  - `taints` (integrity) — arbitrary tags: `untrusted-web`, `isolated-microvm`, `isolated-gvisor`…
-  - labels **join** (set-union both axes) when data mixes ("label the turn").
-  Ideas to demonstrate the real lattice, not just one tag:
-  - multiple distinct secrecy tags that can't cross into each other's cleared sinks
-    (a `medical` note and a `salaries` note, separate clearances);
-  - the **taint** axis end-to-end: read an `untrusted-web` file → it requires *endorsement*
-    before a trusted action (the integrity direction, doc 04 §the-two-AI-threats);
-  - **declassify/endorse** as real operations in aegisd (the two trusted escape hatches);
-  - surface labels in the aegisd UI (`/label` exists; make it show both axes clearly).
+- **Labels in aegisd specifically.** The lattice + declassify/endorse-as-capability is now built and
+  demonstrated (`pnpm demo:labels`, `docs/08`, `kernel/src/privilege.ts`; the vat derives endorsement
+  from held privileges). What's *not* yet done: wire multiple compartments and the privilege model into
+  **aegisd's live workspace** (today it uses one `confidential` tag), and surface both label axes in the
+  aegisd `/label` view. The hard semantic question — *is a given free-text declassify actually safe?* —
+  remains open (issue #2), by design: decentralized IFC says who holds the pen, not that what they sign
+  is safe.
 
 ## Open / housekeeping (not blocking, but real)
 
@@ -36,6 +30,10 @@ Durable scratchpad for things we've explicitly deferred. Newest intent at top.
 
 ## Done (this arc)
 
+- [x] **The label lattice + declassification-as-capability** — `pnpm demo:labels`, `docs/08`,
+  `kernel/src/privilege.ts`. Multi-compartment secrecy + the taint axis; declassify/endorse are *scoped
+  capabilities* (the (a) axiom governs IFC); the vat *derives* endorsement from held privileges (no
+  ambient flag). The headline: **the authority graph and the label lattice are one graph.** *(2026-06-01)*
 - [x] **The write-up / paper** — `PAPER.md` ("An Operating System Where the AI Is Never a Principal"),
   the full argument backed by running code; linked from the README. *(2026-06-01)*
 - [x] **Property-based adversarial suite** — `pnpm fuzz` + `test/fuzz.test.ts`: 3 invariants vs.

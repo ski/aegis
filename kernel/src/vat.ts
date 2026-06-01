@@ -13,6 +13,7 @@ import { harden } from './harden.ts';
 import type { Capability } from './capability.ts';
 import type { Label } from './label.ts';
 import { bottom, flowCheck, fmtLabel, join } from './label.ts';
+import type { Privilege } from './privilege.ts';
 import type { Powerbox } from './powerbox.ts';
 
 export type AuditEvent =
@@ -54,10 +55,26 @@ export class Vat {
   }
 
   private powerbox?: Powerbox;
+  // Label privileges the vat HOLDS (decentralized IFC, doc 08). Endorsement is DERIVED from these —
+  // a tainted send passes iff the vat holds endorse-privileges covering every taint. No ambient flag.
+  private readonly privileges: Privilege[] = [];
 
   /** Endowment (docs/03): the parent decides a child's caps. Bind a held cap under a petname. */
   endow(petname: string, cap: Capability): void {
     this.held.set(petname, cap);
+  }
+
+  /** Endow a label privilege (declassify/endorse authority for specific tags) — itself a capability. */
+  grantPrivilege(priv: Privilege): void {
+    this.privileges.push(priv);
+  }
+
+  /** Does the vat hold endorse-authority for every taint in the current turn? (derives `endorsed`). */
+  private endorsesAllTaints(): boolean {
+    for (const t of this.turnLabel.taints) {
+      if (!this.privileges.some((p) => p.endorses.has(t))) return false;
+    }
+    return true;
   }
 
   /**
@@ -127,8 +144,10 @@ export class Vat {
 
     // A cap held behind a revoked membrane throws on any access — surface it as `revoked`, not a crash.
     try {
-      // Flow gate (global IFC): is the current turn's label cleared for this sink?
-      const verdict = flowCheck(this.turnLabel, cap.clearance, opts?.endorsed ?? false);
+      // Flow gate (global IFC): is the current turn's label cleared for this sink? Endorsement is
+      // DERIVED from held privileges (doc 08) — or, for back-compat / tests, an explicit opts.endorsed.
+      const endorsed = (opts?.endorsed ?? false) || this.endorsesAllTaints();
+      const verdict = flowCheck(this.turnLabel, cap.clearance, endorsed);
       if (!verdict.ok) {
         this.record('flow-block', `${cap.kind}: ${verdict.reasons.join(' | ')}`);
         return harden({ ok: false, blocked: 'flow', tool: cap.kind, reasons: verdict.reasons });
