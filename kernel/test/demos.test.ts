@@ -31,6 +31,7 @@ const demos = [
   'demo:labels',
   'demo:microblog',
   'demo:ownership',
+  'demo:zoe',
 ];
 
 describe('demos exit 0 (integration, under lockdown)', () => {

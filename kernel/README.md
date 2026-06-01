@@ -41,6 +41,7 @@ pnpm demo:space:distributed  # the labeled space distributed over CapTP — coor
 pnpm demo:labels        # the full label lattice + declassification-as-capability (decentralized IFC, doc 08)
 pnpm demo:microblog     # a microblog as caps+IFC — Alice→Bob→Eve: sharing=delegation, visibility=IFC (doc 09)
 pnpm demo:ownership     # ownership as a transferable mint — Alice SELLS post EF342 to Eve (money + escrow + exclusive transfer)
+pnpm demo:zoe           # offer safety — an UNTRUSTED contract sells the deed; worst case a refund, never theft (Agoric/Zoe, doc 10)
 pnpm fuzz [n]           # property-based: invariants hold across n random adversarial cases per property
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit

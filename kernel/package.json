@@ -35,7 +35,8 @@
     "fuzz": "tsx src/demo-fuzz.ts",
     "demo:labels": "tsx src/demo-labels.ts",
     "demo:microblog": "tsx src/demo-microblog.ts",
-    "demo:ownership": "tsx src/demo-ownership.ts"
+    "demo:ownership": "tsx src/demo-ownership.ts",
+    "demo:zoe": "tsx src/demo-zoe.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
