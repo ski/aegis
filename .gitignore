@@ -25,3 +25,7 @@ kernel/microvm/guest-kernel
 
 # seL4 build artifacts (rebuild with kernel/sel4/aegis-tool/build.sh)
 kernel/sel4/aegis-tool/build/
+
+# Firecracker build artifacts (rebuild with kernel/firecracker/build.sh)
+kernel/firecracker/init
+kernel/firecracker/initramfs.cpio.gz

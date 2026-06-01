@@ -33,6 +33,7 @@ pnpm demo:space         # a capability-scoped, labeled, leased tuple space (Java
 pnpm demo:docker        # the Docker isolation rung — a tool in a hardened container (skips live if no Docker)
 pnpm demo:gvisor        # the gVisor rung — a tool behind a userspace kernel (runsc) (skips live if no runsc)
 pnpm demo:microvm       # the microVM rung — a tool in a hardware-virtualized guest via KVM (skips live if no KVM)
+pnpm demo:firecracker   # the production microVM rung — a tool in a Firecracker (AWS-Lambda VMM) guest (skips if absent)
 pnpm demo:sel4          # the VERIFIED rung — a confined PD on the formally-verified seL4 microkernel (skips if no SDK)
 pnpm demo:store         # unify labeled memory (keyed) and the labeled space (associative) — one store, two faces
 pnpm demo:space:distributed  # the labeled space distributed over CapTP — coordination across machines
@@ -109,6 +110,9 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/microvm-tool.ts` | boot a hardware-virtualized guest (KVM) per call, wrapped as a cap |
 | `src/demo-microvm.ts` | the microVM rung; runs live where WSL2+KVM+QEMU exist, else skips the live boot |
 | `microvm/` | guest init (static C), zero-download build, run script, and rung README |
+| `src/firecracker-tool.ts` | boot a Firecracker (AWS-Lambda VMM) microVM per call, wrapped as a cap |
+| `src/demo-firecracker.ts` | the Firecracker rung; runs live where firecracker+KVM exist, else skips |
+| `firecracker/` | guest init, build, run (declarative JSON boot), and rung README |
 | `src/sel4-tool.ts` | build+boot a confined PD on the verified seL4 kernel per call, wrapped as a cap |
 | `src/demo-sel4.ts` | the verified rung; runs live where the Microkit SDK exists, else skips |
 | `sel4/` | the Aegis tool as an seL4 Microkit protection domain + build script + rung README |
@@ -153,10 +157,10 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
   trusted surface. The **seL4 verified floor is now demonstrated** (`demo:sel4`) — a confined PD on the
   machine-checked microkernel — but as a *rung* (prebuilt SDK, under QEMU in WSL2), not yet the project's
   own *separately-verifiable control-plane core* (#19, still the deeper open work).
-- **The full mechanism ladder runs live** — process (`demo:isolation`) < container (`demo:docker`) <
-  gVisor (`demo:gvisor`) < microVM (`demo:microvm`) — but all inside WSL2-on-Windows, a long trust chain
-  (dev-grade, not production). A production KVM/Firecracker substrate on a real Linux box, and the
-  *verified* seL4 floor (the assurance rung above all of these), remain future work.
+- **The full isolation ladder runs live** — process (`demo:isolation`) < container (`demo:docker`) <
+  gVisor (`demo:gvisor`) < microVM / Firecracker (`demo:microvm` / `demo:firecracker`) < the **verified**
+  seL4 floor (`demo:sel4`) — but all inside WSL2-on-Windows, a long trust chain (dev-grade). A production
+  substrate on a real Linux box with direct KVM (and the seL4 floor on real hardware) remains future work.
 - **Never run for real.** Every demo is a scenario authored to pass; the kernel has not been used as a
   persistent daily-driver, so the ergonomic tensions (POLA-vs-usability #7, the human-attention budget
   #24) remain theoretical.
@@ -247,6 +251,12 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
   process &lt; container &lt; **microVM**. Runs live where WSL2+KVM+QEMU exist; skips the live boot
   otherwise. *Dev-grade here* — the VM runs inside WSL2-on-Windows (long trust chain), not a production
   substrate (ADR 0001).
+- [x] **Firecracker rung — the production microVM** (`pnpm demo:firecracker`): the same
+  hardware-virtualization isolation as the QEMU microVM, but via **Firecracker** — the minimal KVM VMM
+  behind AWS Lambda. The tool runs as PID 1 in a stripped-down guest (no network, no extra drives),
+  request in via kernel cmdline, response out via console, a fresh microVM per call. Built zero-download
+  (static-C init + initramfs) on Firecracker's CI vmlinux. See [`firecracker/`](firecracker/). Dev-grade
+  here (runs inside WSL2); the real target is a Linux box with direct KVM (ADR 0001).
 - [x] **seL4 verified rung — the assurance floor** (`pnpm demo:sel4`): the untrusted tool runs as a
   confined **Microkit protection domain on the formally-verified seL4 microkernel** (booted on
   qemu-aarch64). Every rung above provides strong-but-*unverified* isolation; seL4 has machine-checked

@@ -23,6 +23,7 @@ const demos = [
   'demo:docker',
   'demo:gvisor',
   'demo:microvm',
+  'demo:firecracker',
   'demo:sel4',
   'demo:store',
   'demo:space:distributed',
