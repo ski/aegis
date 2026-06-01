@@ -114,6 +114,7 @@ See [docs/00-overview.md](docs/00-overview.md) for the full argument,
 | `docs/06-irreducible-limits.md` | What the design honestly *cannot* solve — the fundamental limits it scopes around rather than fixes |
 | `docs/07-coordination-the-labeled-space.md` | A novel primitive — Linda/JavaSpaces coordination reconciled with ocap + IFC + leases |
 | `docs/08-the-two-graphs-are-one.md` | Declassification as a capability — the authority graph and the label lattice are one graph |
+| `docs/09-worked-example-the-microblog.md` | A full app decomposed: sharing=delegation, visibility=IFC, the social graph=the capability graph (+ complication roadmap) |
 | `docs/glossary.md` | Quick reference for the vocabulary |
 | `docs/decisions/` | Dated decision records (ADR-style) |
 
