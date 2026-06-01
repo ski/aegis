@@ -33,8 +33,16 @@ Durable scratchpad for things we've explicitly deferred. Newest intent at top.
   whether powerbox/attention-budget fatigue (#7/#24) actually bites. The unanswered question.
 - **A stronger model** behind aegisd — Gemma 4 E4B (4.5B) is a weak planner; try a 14B (Phi-class) or a
   remote frontier cap, and measure planning vs. the unchanged security guarantees.
-- **The write-up / paper** — the novel ideas (labeled space, least-authority+least-knowledge, ingestion-
-  vs-output IFC, secrets-that-decay, grammar-as-security-boundary) now backed by running code on a
-  verified kernel. Highest leverage-on-the-world, lowest remaining code.
-- **Property-based adversarial suite** — "no action sequence exfiltrates a labeled secret," checked by
-  fuzzing thousands of sequences against the membrane. Turns "demos pass" into "invariant holds under search."
+
+## Done (this arc)
+
+- [x] **The write-up / paper** — `PAPER.md` ("An Operating System Where the AI Is Never a Principal"),
+  the full argument backed by running code; linked from the README. *(2026-06-01)*
+- [x] **Property-based adversarial suite** — `pnpm fuzz` + `test/fuzz.test.ts`: 3 invariants vs.
+  independent shadow oracles, **60,000 random cases, zero counterexamples**, mutation-tested so it has
+  teeth. CI-gated at 1500/property. *(2026-06-01)*
+- [x] **aegisd — the design made real** — persistent interactive agent on real files, real local model,
+  grammar-constrained, native Linux/WSL2. Secret-exfil blocked live by the IFC membrane. `kernel/AEGISD.md`.
+- [x] **Full isolation ladder, every rung live** — process → container → gVisor → microVM → Firecracker
+  → seL4 (verified). All wrapped as the same capability.
+- [x] **Real model + grammar-constrained tool-calls** — Gemma 4 E4B via llama.cpp, GBNF-locked output.
