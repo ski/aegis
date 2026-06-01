@@ -22,3 +22,6 @@ build/
 kernel/microvm/init
 kernel/microvm/initramfs.cpio.gz
 kernel/microvm/guest-kernel
+
+# seL4 build artifacts (rebuild with kernel/sel4/aegis-tool/build.sh)
+kernel/sel4/aegis-tool/build/

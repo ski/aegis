@@ -2,3 +2,4 @@
 *.sh text eol=lf
 kernel/microvm/build.sh text eol=lf
 kernel/microvm/run.sh text eol=lf
+kernel/sel4/aegis-tool/build.sh text eol=lf

@@ -33,6 +33,7 @@ pnpm demo:space         # a capability-scoped, labeled, leased tuple space (Java
 pnpm demo:docker        # the Docker isolation rung — a tool in a hardened container (skips live if no Docker)
 pnpm demo:gvisor        # the gVisor rung — a tool behind a userspace kernel (runsc) (skips live if no runsc)
 pnpm demo:microvm       # the microVM rung — a tool in a hardware-virtualized guest via KVM (skips live if no KVM)
+pnpm demo:sel4          # the VERIFIED rung — a confined PD on the formally-verified seL4 microkernel (skips if no SDK)
 pnpm demo:store         # unify labeled memory (keyed) and the labeled space (associative) — one store, two faces
 pnpm demo:space:distributed  # the labeled space distributed over CapTP — coordination across machines
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
@@ -108,6 +109,9 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/microvm-tool.ts` | boot a hardware-virtualized guest (KVM) per call, wrapped as a cap |
 | `src/demo-microvm.ts` | the microVM rung; runs live where WSL2+KVM+QEMU exist, else skips the live boot |
 | `microvm/` | guest init (static C), zero-download build, run script, and rung README |
+| `src/sel4-tool.ts` | build+boot a confined PD on the verified seL4 kernel per call, wrapped as a cap |
+| `src/demo-sel4.ts` | the verified rung; runs live where the Microkit SDK exists, else skips |
+| `sel4/` | the Aegis tool as an seL4 Microkit protection domain + build script + rung README |
 | `src/store.ts` | unified labeled+leased store: keyed (`kv`) + associative (`space`) faces over one core |
 | `src/demo-store.ts` | one store, two faces — labeled memory and the labeled space unified |
 | `src/demo-space-distributed.ts` | the labeled space over CapTP — coordination across a wire |
@@ -146,7 +150,9 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
 - **The declassifier is structural and demo-specific** (a count-only reducer, sound because it derives
   from cardinality alone). A general free-text declassifier is an open problem, not a TODO (#2).
 - **SES hardens the realm, not the TCB.** The 4-method microkernel (`demo:microkernel`) shrinks the
-  trusted surface, but a *separately-verifiable* core / the seL4 floor (#19, phase 3) is unbuilt.
+  trusted surface. The **seL4 verified floor is now demonstrated** (`demo:sel4`) — a confined PD on the
+  machine-checked microkernel — but as a *rung* (prebuilt SDK, under QEMU in WSL2), not yet the project's
+  own *separately-verifiable control-plane core* (#19, still the deeper open work).
 - **The full mechanism ladder runs live** — process (`demo:isolation`) < container (`demo:docker`) <
   gVisor (`demo:gvisor`) < microVM (`demo:microvm`) — but all inside WSL2-on-Windows, a long trust chain
   (dev-grade, not production). A production KVM/Firecracker substrate on a real Linux box, and the
@@ -241,6 +247,13 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
   process &lt; container &lt; **microVM**. Runs live where WSL2+KVM+QEMU exist; skips the live boot
   otherwise. *Dev-grade here* — the VM runs inside WSL2-on-Windows (long trust chain), not a production
   substrate (ADR 0001).
+- [x] **seL4 verified rung — the assurance floor** (`pnpm demo:sel4`): the untrusted tool runs as a
+  confined **Microkit protection domain on the formally-verified seL4 microkernel** (booted on
+  qemu-aarch64). Every rung above provides strong-but-*unverified* isolation; seL4 has machine-checked
+  proofs, so confinement here is **proven**, not merely structural — ADR 0001's phase-3 verified floor.
+  A fresh image is built + booted per call; output labeled `isolated-sel4-verified`. See
+  [`sel4/`](sel4/). Honest: the proof covers the *kernel*, not our PD/tooling/stack; we use the prebuilt
+  SDK under QEMU in WSL2 — a demonstration of the rung, not a hardened bare-metal deployment.
 - [x] **Unified labeled store** (`pnpm demo:store`): labeled memory (keyed) and the labeled space
   (associative) are one capability-secure, labeled, leased store with two faces — a keyed `kv` put is the
   same entry the associative `space` face sees (keyed = template on the `__key` field). Facet attenuation,

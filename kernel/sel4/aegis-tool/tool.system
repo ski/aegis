@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Aegis tool — a single confined protection domain on the verified seL4 microkernel.
+ It has exactly one capability surface: its own program image. No ambient authority.
+-->
+<system>
+    <protection_domain name="aegis_tool">
+        <program_image path="tool.elf" />
+    </protection_domain>
+</system>

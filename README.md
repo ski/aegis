@@ -86,7 +86,8 @@ passes (33 findings tracked as issues), and demonstrated by 19 runnable demos + 
 | `pnpm demo:clock` / `:attestation` / `:policy` | TCB-integrity: trusted clock+leases (#30), pinned-hash admission (#29), admin-cap-gated audited policy (#31) |
 | `pnpm demo:assistant` | capstone — a confined document assistant doing a real task on real files |
 | `pnpm demo:space` / `:store` / `:space:distributed` | a capability-scoped, labeled, leased coordination store (keyed + associative), distributed over CapTP (doc 07) |
-| `pnpm demo:isolation` / `:docker` / `:microvm` | isolation-plane rungs — an untrusted tool in its own process / a hardened container / a hardware-virtualized KVM guest |
+| `pnpm demo:isolation` / `:docker` / `:gvisor` / `:microvm` | mechanism isolation rungs — process / hardened container / gVisor userspace-kernel / hardware-virtualized KVM guest |
+| `pnpm demo:sel4` | the **verified** isolation rung — a confined protection domain on the formally-verified seL4 microkernel |
 
 See the per-component honest scope in [`kernel/README.md`](kernel/README.md) and the fundamental limits
 in [`docs/06-irreducible-limits.md`](docs/06-irreducible-limits.md).

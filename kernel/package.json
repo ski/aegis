@@ -26,6 +26,7 @@
     "demo:docker": "tsx src/demo-docker.ts",
     "demo:gvisor": "tsx src/demo-gvisor.ts",
     "demo:microvm": "tsx src/demo-microvm.ts",
+    "demo:sel4": "tsx src/demo-sel4.ts",
     "demo:store": "tsx src/demo-store.ts",
     "demo:space:distributed": "tsx src/demo-space-distributed.ts"
   },
