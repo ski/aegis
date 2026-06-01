@@ -14,6 +14,7 @@
     "demo:distribution": "tsx src/demo-distribution.ts",
     "demo:microkernel": "tsx src/demo-microkernel.ts",
     "demo:model:http": "tsx src/demo-model-http.ts",
+    "demo:grammar": "tsx src/demo-grammar.ts",
     "demo:isolation": "tsx src/demo-isolation.ts",
     "demo:memory": "tsx src/demo-memory.ts",
     "test": "vitest run",

@@ -35,6 +35,7 @@ pnpm demo:gvisor        # the gVisor rung — a tool behind a userspace kernel (
 pnpm demo:microvm       # the microVM rung — a tool in a hardware-virtualized guest via KVM (skips live if no KVM)
 pnpm demo:firecracker   # the production microVM rung — a tool in a Firecracker (AWS-Lambda VMM) guest (skips if absent)
 pnpm demo:sel4          # the VERIFIED rung — a confined PD on the formally-verified seL4 microkernel (skips if no SDK)
+pnpm demo:grammar       # a REAL local model (Gemma 4 E4B / llama.cpp), grammar-constrained tool-calls (set AEGIS_LLM_URL)
 pnpm demo:store         # unify labeled memory (keyed) and the labeled space (associative) — one store, two faces
 pnpm demo:space:distributed  # the labeled space distributed over CapTP — coordination across machines
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
@@ -86,6 +87,10 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/wasm-tool.ts` | compile WAT→wasm; wrap a WASM export as a capability; `importsOf` (the authority surface) |
 | `src/demo-wasm.ts` | milestone 3: a WASM tool has only the authority it was handed |
 | `src/model-oracle.ts` | model-as-oracle: constrained decoding (validate+retry), inference log, replay, OpenAI-compatible adapter |
+| `src/tool-grammar.ts` | GBNF grammar that locks output to a valid tool-call whose `tool` is a held cap |
+| `src/grammar-oracle.ts` | oracle that grammar-constrains a llama.cpp server at decode time (hard guarantee) |
+| `src/demo-grammar.ts` | a real local model, structurally confined to valid tool-calls; the membrane still decides |
+| `llm/` | llama.cpp + GGUF setup, what we verified about grammar enforcement, and the gotchas |
 | `src/demo-model.ts` | milestone 4: messy model text → tool-calls; guarantees invariant under model swap; deterministic replay |
 | `src/demo-hardened.ts` | hardening: lockdown active, tamper-proof caps, Far, transitive membrane, cascading-revoke kill-switch |
 | `src/demo-distribution.ts` | CapTP: cross-vat caps, promise pipelining, confinement + revocation across a wire |
@@ -137,8 +142,10 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
   *control-plane* caps are still in-process JS objects relying on SES + the microkernel boundary, not
   per-cap WASM/VM isolation. Hardening each effect into its own sandbox is incremental.
 - **The default demos use a deterministic mock model** so the security property stays testable offline.
-  Real inference works (`demo:model:http`, or `AEGIS_MODEL_URL=…/v1/chat/completions pnpm demo:model`
-  against Ollama/llama.cpp) but is opt-in, not the default.
+  Real inference works — `demo:model:http` (mock HTTP server), and `demo:grammar` drives a **real local
+  model** (Gemma 4 E4B via llama.cpp) with **grammar-constrained** tool-calls when opted in via
+  `AEGIS_LLM_URL`. Constrained decoding is now structural (GBNF), not validate-and-retry. See
+  [`llm/`](llm/).
 - **Stores are in-memory.** The unified labeled store (`store.ts`) is not persisted; JavaSpaces-style
   durability + label preservation across restarts is unbuilt.
 - **Template matching is primitive-equality only** (doc 07): object-valued fields won't match; no

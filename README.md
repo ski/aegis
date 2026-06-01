@@ -79,6 +79,7 @@ passes (33 findings tracked as issues), and demonstrated by 19 runnable demos + 
 | `pnpm demo:powerbox` | brokered grants — manufactured grants die at the gate; real grants flow over a trusted path (#7, #17, #20) |
 | `pnpm demo:wasm` | a real WASM tool is a capability with zero ambient authority (#D1) |
 | `pnpm demo:model` | model-as-oracle — constrained decoding + deterministic replay; guarantees invariant under model swap |
+| `pnpm demo:grammar` | a **real** local model (Gemma 4 E4B / llama.cpp) **grammar-constrained** to valid tool-calls; the membrane still decides |
 | `pnpm demo:hardened` | SES lockdown + tamper-proof caps + a transitive revocable membrane (cascading revocation) |
 | `pnpm demo:distribution` | CapTP — cross-vat capabilities, promise pipelining, revocation across a wire |
 | `pnpm demo:microkernel` | all raw authority behind a 4-method core; caps can't be invoked off-path (#19) |
