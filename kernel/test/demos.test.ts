@@ -30,6 +30,7 @@ const demos = [
   'demo:grammar',
   'demo:labels',
   'demo:microblog',
+  'demo:ownership',
 ];
 
 describe('demos exit 0 (integration, under lockdown)', () => {

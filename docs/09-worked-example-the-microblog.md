@@ -159,11 +159,28 @@ everything else is designed-but-unbuilt, with the mechanism named.
 
 ### 4.6 Money & moderation
 
-- **Paid posts / subscriptions.** A paid post's read-cap is something you *buy*; a subscription is a
-  **leased** read-cap to a stream that **expires** unless renewed — Jini-style leasing
-  ([doc 05](05-least-authority-least-knowledge.md)), the same decay discipline as everything else.
-- **Moderation.** A moderator holds a `takedown` cap **scoped to a community** (not global) — least
-  authority for moderators too. A user *report* is a **capability request** (a message to the
+- **Money & ownership transfer — BUILT** (`pnpm demo:ownership`; `kernel/src/mint.ts`,
+  `kernel/src/ownership.ts`). This is the deepest part, and it formalizes **ownership**:
+  - **Money is a mint & purse** (Miller/E): value lives in the mint's closure-private ledger keyed by
+    purse identity, *not* in the reference — so you can't forge money by copying a purse, and payment
+    conserves total value.
+  - **Owning a post = holding its DEED** — the *mint* that issues all its share/read caps, plus the
+    right to transfer it. A mere share-cap is a leaf; the deed is the root.
+  - **Sharing is COPY; ownership is EXCLUSIVE.** Capability-passing is copy-by-default (the giver keeps
+    theirs) — perfect for sharing, *wrong* for selling. Exclusivity is **manufactured**: the deed is held
+    behind a caretaker from birth, so `transfer := cascading-revoke(seller's deed) + mint a fresh deed
+    for the buyer`. After the sale the seller's deed is **inert** (and so is every share-cap she copied
+    from it — transitive revocation); the buyer holds the only live deed.
+  - **The sale is an escrow swap** — atomic within one single-threaded vat turn: verify funds, move
+    payment, transfer the deed, or refund.
+  - **Humans and agents own identically.** The deed is *principal-agnostic* — transferring it to an
+    autonomous agent (`brand-agent-7`) works exactly as transferring it to a person. There is no special
+    "agents can't own" case; an agent holding a deed is an owner, full stop.
+- **Paid posts / subscriptions** *(designed).* A paid post's read-cap is something you *buy* (a purse
+  payment in exchange for a minted read-cap); a subscription is a **leased** read-cap to a stream that
+  **expires** unless renewed — Jini-style leasing ([doc 05](05-least-authority-least-knowledge.md)).
+- **Moderation** *(designed).* A moderator holds a `takedown` cap **scoped to a community** (not global)
+  — least authority for moderators too. A user *report* is a **capability request** (a message to the
   moderation powerbox), adjudicated and audited like any grant.
 
 ---
