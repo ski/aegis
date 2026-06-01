@@ -31,6 +31,7 @@ pnpm demo:policy        # #31: only the operator's admin cap may change policy; 
 pnpm demo:assistant     # capstone: a confined document assistant doing a real task on real files
 pnpm demo:space         # a capability-scoped, labeled, leased tuple space (JavaSpaces ∩ ocap ∩ IFC ∩ leases)
 pnpm demo:docker        # the Docker isolation rung — a tool in a hardened container (skips live if no Docker)
+pnpm demo:gvisor        # the gVisor rung — a tool behind a userspace kernel (runsc) (skips live if no runsc)
 pnpm demo:microvm       # the microVM rung — a tool in a hardware-virtualized guest via KVM (skips live if no KVM)
 pnpm demo:store         # unify labeled memory (keyed) and the labeled space (associative) — one store, two faces
 pnpm demo:space:distributed  # the labeled space distributed over CapTP — coordination across machines
@@ -102,6 +103,8 @@ absorbed ("label the turn, not the token"), so any send is gated regardless of t
 | `src/demo-space.ts` | decoupled coordination scoped by caps, labeled by IFC, decaying by lease |
 | `src/docker-tool.ts` | spawn a tool in a hardened container (no caps/network, read-only, bounded) as a cap |
 | `src/demo-docker.ts` | the Docker isolation rung; runs live where Docker exists, else verifies the argv |
+| `src/gvisor-tool.ts` | run a tool behind gVisor's userspace kernel (`runsc do`), wrapped as a cap |
+| `src/demo-gvisor.ts` | the gVisor rung; runs live where runsc exists, else verifies the sandbox argv |
 | `src/microvm-tool.ts` | boot a hardware-virtualized guest (KVM) per call, wrapped as a cap |
 | `src/demo-microvm.ts` | the microVM rung; runs live where WSL2+KVM+QEMU exist, else skips the live boot |
 | `microvm/` | guest init (static C), zero-download build, run script, and rung README |
@@ -144,9 +147,10 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
   from cardinality alone). A general free-text declassifier is an open problem, not a TODO (#2).
 - **SES hardens the realm, not the TCB.** The 4-method microkernel (`demo:microkernel`) shrinks the
   trusted surface, but a *separately-verifiable* core / the seL4 floor (#19, phase 3) is unbuilt.
-- **Isolation reaches the microVM rung** (`demo:microvm`, hardware-virtualized guest via KVM) — but it
-  runs inside WSL2-on-Windows, a long trust chain (dev-grade, not production). gVisor is still unbuilt,
-  and a production KVM/Firecracker substrate on a real Linux box (and the seL4 floor) remains future work.
+- **The full mechanism ladder runs live** — process (`demo:isolation`) < container (`demo:docker`) <
+  gVisor (`demo:gvisor`) < microVM (`demo:microvm`) — but all inside WSL2-on-Windows, a long trust chain
+  (dev-grade, not production). A production KVM/Firecracker substrate on a real Linux box, and the
+  *verified* seL4 floor (the assurance rung above all of these), remain future work.
 - **Never run for real.** Every demo is a scenario authored to pass; the kernel has not been used as a
   persistent daily-driver, so the ergonomic tensions (POLA-vs-usability #7, the human-attention budget
   #24) remain theoretical.
@@ -225,6 +229,11 @@ distribution, the microkernel, the TCB-integrity trio, and a Docker isolation ru
   network**, the tool's *only* channel is the capability. Rung ladder: child process &lt; **Docker
   (namespaces)** &lt; gVisor &lt; microVM (Firecracker/Kata). Runs live where Docker exists; verifies the
   confinement argv and skips the live run otherwise (stays green in CI).
+- [x] **gVisor isolation rung** (`pnpm demo:gvisor`): the rung between container and microVM — the
+  untrusted tool runs behind **gVisor's userspace kernel** (`runsc`), which intercepts and services its
+  syscalls so it never touches the host Linux kernel directly (far smaller host attack surface than a
+  plain container, no full VM). Run via `runsc do` standalone (no Docker daemon needed), network
+  disabled, wrapped as a capability, output labeled `isolated-gvisor`. Runs live where runsc exists.
 - [x] **MicroVM isolation rung** (`pnpm demo:microvm`): the strongest rung — the untrusted tool runs in a
   **hardware-virtualized guest with its own kernel** (isolated by KVM), no network/disk/shared-fs, the
   serial console its only channel, wrapped as a capability. Built with zero downloads (static-C init +
