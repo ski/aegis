@@ -9,6 +9,9 @@ them with object-capabilities and information-flow control. The core bet:
 > **The model is never a principal. It is a subject confined by the capabilities it holds.
 > The model proposes; the capability graph disposes.**
 
+📄 **New here? Read [PAPER.md](PAPER.md)** — *An Operating System Where the AI Is Never a Principal* —
+the full argument and what was built, in one essay. Every claim is backed by code in this repo.
+
 ## The unifying principle: least authority + least knowledge
 
 An untrusted agent is dangerous along exactly two axes — what it can **do** and what it can **know** —

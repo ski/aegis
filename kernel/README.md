@@ -38,6 +38,7 @@ pnpm demo:sel4          # the VERIFIED rung — a confined PD on the formally-ve
 pnpm demo:grammar       # a REAL local model (Gemma 4 E4B / llama.cpp), grammar-constrained tool-calls (set AEGIS_LLM_URL)
 pnpm demo:store         # unify labeled memory (keyed) and the labeled space (associative) — one store, two faces
 pnpm demo:space:distributed  # the labeled space distributed over CapTP — coordination across machines
+pnpm fuzz [n]           # property-based: invariants hold across n random adversarial cases per property
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit
 # point demo:model at a real local model:
