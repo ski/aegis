@@ -56,6 +56,23 @@ Alice sells post EF342's deed to Eve through an **untrusted** contract. Four run
 Three different attacks, three different guards, one invariant: *you cannot end up worse than your offer,
 no matter what the contract does.*
 
+### A real computing contract: the AMM (`pnpm demo:amm`)
+
+The swap above is trivial — the honest reallocation is just "give each party the other's escrow". The
+sharper test is a contract that does **real math**: a constant-product **AMM** (`x·y=k`, the Uniswap
+mechanism). The contract computes a price off the curve and proposes a reallocation; Zoe still bounds it:
+
+- **honest AMM** → trader spends 100 Coin, gets the curve amount (90 Tok, rounded so `k` never
+  decreases — the pool keeps the dust); trade completes.
+- **shortchange AMM** (gives 50, trader's `want` floor was 90) → **rejected by offer safety**; the
+  trader's slippage limit *is* their `want`, so a below-floor fill is refunded.
+- **counterfeit AMM** (mint 5000 Tok from a 1000-Tok pool) → **rejected by rights conservation**.
+- **vanish AMM** (drops the trader's 100 Coin) → **rejected by rights conservation**.
+
+So offer safety isn't an artifact of a trivial contract: even with real pricing computation in the loop,
+a buggy-or-malicious AMM is bounded to *refund, never theft*. The trader's `want` doubles as their
+slippage protection — enforced by the trusted framework, not by trusting the AMM.
+
 ## Why this is the right capstone for the money thread
 
 The earlier [`demo:ownership`](../examples/moimoi/demo-ownership.ts) sale used a **trusted** escrow agent —

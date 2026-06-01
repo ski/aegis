@@ -29,6 +29,7 @@ const demos = [
   'demo:space:distributed',
   'demo:grammar',
   'demo:labels',
+  'demo:amm',
 ];
 
 describe('demos exit 0 (integration, under lockdown)', () => {

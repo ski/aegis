@@ -42,6 +42,7 @@ pnpm demo:labels        # the full label lattice + declassification-as-capabilit
 # The microblog exposition (sharing / ownership / Zoe offer-safety) is a worked example, not a kernel
 # primitive — it lives in ../examples/moimoi (see examples/moimoi/README.md). The money + offer-safety
 # *primitives* (mint.ts, ertp.ts, zoe.ts) stay here; moimoi imports them.
+pnpm demo:amm           # a constant-product AMM (x·y=k) as an UNTRUSTED Zoe contract — offer safety with real math (doc 10)
 pnpm fuzz [n]           # property-based: invariants hold across n random adversarial cases per property
 pnpm test               # vitest: unit tests + an integration test that runs every demo under lockdown
 pnpm typecheck          # tsc --noEmit

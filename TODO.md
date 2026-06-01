@@ -75,8 +75,8 @@ share semantics, distributed-revocation timing, spam/sybil — named, not solved
   whether powerbox/attention-budget fatigue (#7/#24) actually bites. The unanswered question.
 - **A stronger model** behind aegisd — Gemma 4 E4B (4.5B) is a weak planner; try a 14B (Phi-class) or a
   remote frontier cap, and measure planning vs. the unchanged security guarantees.
-- **A real Zoe contract** — an auction or constant-product AMM under the offer-safety framework (doc 10),
-  not just an atomic swap.
+- [x] **A real Zoe contract** — DONE: a constant-product AMM (x·y=k) as an untrusted contract
+  (`demo:amm`); offer safety + conservation hold with real pricing math (doc 10). *(2026-06-01)*
 
 ## Done (this arc)
 
