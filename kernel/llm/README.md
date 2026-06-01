@@ -55,6 +55,29 @@ Without a server, `pnpm demo:grammar` verifies the grammar shape offline and ski
   enforcement with an adversarial prompt, never assume the field was honored. The module's `string` rule
   uses the correct `[^"\\]`.
 
+## Why we impose our own grammar instead of Gemma's native tool format
+
+Gemma 4 has a *trained* function-calling format using special tokens
+(`<|tool_call>call:fn{param:<|"|>value<|"|>}<|tool_call|>`). We deliberately do **not** use it, and
+probing the live model confirmed this is the right call:
+
+- **It's brittle here.** llama.cpp's own loader warns the GGUF's tool tokens are mistyped
+  (`control-looking token '<|tool_response>' was not control-type; this is probably a bug in the model`),
+  and driving it via the OpenAI `tools` field returned empty completions (`finish_reason: length`). The
+  native path depends on the model *choosing* to emit those tokens — unconstrained, it often just answers
+  in prose instead.
+- **It's model-specific.** Coupling the kernel's security-critical output structure to Gemma's format
+  breaks the moment you swap to Qwen/Phi/Llama — each has its own. That violates the "model is a
+  swappable oracle" principle (ADR 0001).
+- **A GBNF grammar is the stronger guarantee.** The native format *relies on trained cooperation*; our
+  grammar *forces* valid structure at the sampler regardless of what the model was trained to do. In the
+  threat model we don't trust the model to behave — *including to format correctly*. So a model-agnostic
+  grammar that constrains decoding is exactly right: it decouples tool-call structure from any one
+  model's idiosyncratic (and here, buggy) trained format.
+
+In short: imposing our own grammar isn't fighting the model — it's the deliberate, security-motivated
+choice to make valid tool-calls a property of *the kernel*, not of *the model's training*.
+
 ## Honest caveat
 
 Gemma 4 E4B (~4.5B effective) is a small model — a competent tool-router, not a frontier reasoner, which
