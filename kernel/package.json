@@ -33,7 +33,8 @@
     "demo:space:distributed": "tsx src/demo-space-distributed.ts",
     "aegisd": "node --experimental-transform-types src/aegisd.ts",
     "fuzz": "tsx src/demo-fuzz.ts",
-    "demo:labels": "tsx src/demo-labels.ts"
+    "demo:labels": "tsx src/demo-labels.ts",
+    "demo:microblog": "tsx src/demo-microblog.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
