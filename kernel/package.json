@@ -31,7 +31,8 @@
     "demo:sel4": "tsx src/demo-sel4.ts",
     "demo:store": "tsx src/demo-store.ts",
     "demo:space:distributed": "tsx src/demo-space-distributed.ts",
-    "aegisd": "node --experimental-transform-types src/aegisd.ts"
+    "aegisd": "node --experimental-transform-types src/aegisd.ts",
+    "fuzz": "tsx src/demo-fuzz.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
