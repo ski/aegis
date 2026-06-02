@@ -107,6 +107,48 @@ the runbook), SEO, performance. Federation (OCapN) is explicitly OUT of v1.
    follow, home feed, public/followers-only audiences, share/boost. Defer: DMs, circles, quote, edits,
    notifications, search — all designed (doc 09) but not v1.
 
+## The trust boundary (moimoi can't run its own OS — so where IS the boundary?)
+
+moimoi runs on Cloudflare, not bare metal, so there is no seL4 floor. That's fine — the OS boundary was
+never the thing confining the AI; the *capability graph* was. The boundary we CAN have, top (ours) to
+bottom (delegated):
+
+| Layer | Enforced by | What it is |
+| --- | --- | --- |
+| The AI | grammar + membrane (ours) | reached as a metered capability (gateway fetch); never executes in-process; proposes, doesn't dispose |
+| The capability membrane | our Worker/DO code | the moimoi kernel — every action gated (authority + IFC) before any effect |
+| SES / Endo hardening | `lockdown()` in the Worker | tamper-proof caps, transitive membrane, 4-method-microkernel pattern — **"Endo for real"** |
+| V8 isolate | Cloudflare | per-Worker/DO sandbox (gVisor-class tenant isolation) — **our floor** |
+| Hypervisor / hardware | Cloudflare | trusted, as our dev setup still trusted the Linux guest doing inference |
+
+Two of the three goals don't need the OS boundary at all:
+
+1. **Constraining the AI** is unchanged from what we built. The model lives at Vertex behind the gateway —
+   already isolated, already *just a capability*. We never host it. `gateway-oracle.ts` (grammar/schema-
+   constrained output) + the dual gate already do this; Cloudflare changes nothing. The OS never confined
+   the model; the cap graph did.
+2. **Endo/SES** is pure JavaScript. MetaMask ships SES in browsers; Agoric runs it on a chain; a Worker is
+   a friendlier host than either. `lockdown()` at Worker module-init → tamper-proof caps + the transitive
+   membrane *inside* the Worker. **The SES realm inside each Worker/DO is ours; the V8 isolate around it is
+   Cloudflare's.** That is the boundary.
+3. **Agoric** splits in two: (a) Endo/SES *patterns* (caps, membranes, mint-purse, Zoe offer-safety) run
+   IN the Worker — buildable now, what we demoed; (b) the Agoric *chain* (trustless multi-party settlement)
+   is only needed if the ownership/money layer must be trustless across parties who don't trust
+   moimoi-the-operator. v1: a **mini-Zoe in a Worker** (trusted-by-us, like `kernel/src/zoe.ts`). The real
+   chain is a later differentiator if deeds/paid-posts become a cross-party market.
+
+**What we trust** (shrinks, never zero — the #19 caveat in prod): Cloudflare's platform + the SES TCB +
+our membrane/kernel code (small, unverified). **What we don't:** the AI (caps + grammar + membrane), the
+client (holds sturdyrefs, not caps), user content (IFC-labeled), contract logic if there's a marketplace
+(offer-safety). This is exactly what every shipping ocap system does — "SES in a Worker" is legitimately
+production-grade for this class of system.
+
+> **Phase 0 spike (do this FIRST, before app-building):** does `import '@endo/init'; lockdown()` run
+> cleanly inside a Cloudflare Worker / Durable Object under `wrangler dev`, and can a DO hold a hardened
+> cap across requests? It *should* (pure JS, no Node deps), but the Workers runtime has its own frozen
+> globals — verify early. Fallback if SES has friction: plain hardened-JS caps (weaker tamper-resistance,
+> identical capability *logic*). Not fatal either way, but decide it before building on it.
+
 ## What carries over verbatim (the win)
 
 The entire `examples/moimoi` logic + `kernel/src` primitives are the *reference implementation* of the
